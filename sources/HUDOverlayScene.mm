@@ -42,7 +42,7 @@
     FBSMutableSceneDefinition *definition = [definitionClass definition];
     definition.identity = [sceneIdentityClass identityForIdentifier:@"ch.xxtou.hudapp.overlay"];
     definition.clientIdentity = [clientIdentityClass localIdentity];
-    definition.specification = [specificationClass specification];
+    definition.specification = [(id)specificationClass specification];
 
     FBSMutableSceneParameters *parameters = [parametersClass parametersForSpecification:definition.specification];
 
@@ -97,12 +97,7 @@
 {
     if (_presenter) {
         [_presenter deactivate];
-        if ([_presenter respondsToSelector:@selector(invalidate)]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-            [_presenter performSelector:@selector(invalidate)];
-#pragma clang diagnostic pop
-        }
+        [_presenter invalidate];
         _presenter = nil;
     }
     _scene = nil;

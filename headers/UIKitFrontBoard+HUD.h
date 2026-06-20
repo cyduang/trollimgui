@@ -18,9 +18,11 @@
 @end
 
 @interface FBSSceneSpecification : NSObject
++ (instancetype)specification;
 @end
 
 @interface UIApplicationSceneSpecification : FBSSceneSpecification
++ (instancetype)specification;
 @end
 
 @interface FBSSceneParameters : NSObject
@@ -60,6 +62,8 @@
 @property (nonatomic, readonly) _UIScenePresentationView *presentationView;
 - (void)modifyPresentationContext:(void (^)(id context))block;
 - (void)activate;
+- (void)deactivate;
+- (void)invalidate;
 @end
 
 @interface UIMutableScenePresentationContext : NSObject
