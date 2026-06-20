@@ -229,6 +229,7 @@
 		AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = imgui_impl_ios_cg.mm; sourceTree = "<group>"; };
 		AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDOverlayScene.mm; sourceTree = "<group>"; };
 		AA11B0432B5BF5C6007235A6 /* HUDOverlayScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HUDOverlayScene.h; sourceTree = "<group>"; };
+		AA11B0442B5BF5C6007235A6 /* UIKitFrontBoard+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIKitFrontBoard+HUD.h"; sourceTree = "<group>"; };
 		AA11A0092B5BF5C6007235A6 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -415,6 +416,7 @@
 				CC711D732B5BF6B7007235A6 /* UIEventFetcher.h */,
 				CC711D672B5BF6B7007235A6 /* UITouch+Private.h */,
 				CC711D7B2B5BF6B7007235A6 /* UIWindow+Private.h */,
+				AA11B0442B5BF5C6007235A6 /* UIKitFrontBoard+HUD.h */,
 				CC9130A02B616BBF006E3280 /* CAFilter.h */,
 			);
 			path = headers;
@@ -711,6 +713,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/IMGUI",
+					"$(PROJECT_DIR)/headers",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
@@ -765,6 +768,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/IMGUI",
+					"$(PROJECT_DIR)/headers",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
@@ -954,6 +958,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/IMGUI",
+					"$(PROJECT_DIR)/headers",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
@@ -1012,6 +1017,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/IMGUI",
+					"$(PROJECT_DIR)/headers",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;

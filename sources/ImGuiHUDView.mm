@@ -142,7 +142,7 @@ static BOOL s_imguiInitialized = NO;
         8,
         width * 4,
         colorSpace,
-        (CGBitmapInfo)(kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big));
+        (CGBitmapInfo)(kCGImageAlphaPremultipliedFirst | (CGBitmapInfo)kCGBitmapByteOrder32Little));
     CGColorSpaceRelease(colorSpace);
 }
 
