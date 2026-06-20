@@ -15,6 +15,7 @@
 #import "HUDPresetPosition.h"
 #import "HUDRootViewController.h"
 #import "HUDBackdropLabel.h"
+#import "ImGuiHUDView.h"
 #import "TrollSpeed-Swift.h"
 
 #ifdef __cplusplus
@@ -493,6 +494,7 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
     UIView *_contentView;
     HUDBackdropLabel *_speedLabel;
     UIImageView *_lockedView;
+    ImGuiHUDView *_imguiView;
     NSTimer *_timer;
     UITapGestureRecognizer *_tapGestureRecognizer;
     UIPanGestureRecognizer *_panGestureRecognizer;
@@ -575,63 +577,9 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
 {
     [self loadUserDefaults:YES];
 
-    BOOL singleLineMode = [self singleLineMode];
-    HUD_SHOW_UPLOAD_SPEED = !singleLineMode;
-
-    BOOL usesBitrate = [self usesBitrate];
-    HUD_DATA_UNIT = usesBitrate;
-
-    BOOL usesArrowPrefixes = [self usesArrowPrefixes];
-    HUD_UPLOAD_PREFIX = (usesArrowPrefixes ? "↑" : "▲");
-    HUD_DOWNLOAD_PREFIX = (usesArrowPrefixes ? "↓" : "▼");
-
-    BOOL usesCustomFontSize = [self usesCustomFontSize];
-    if (!usesCustomFontSize) {
-        BOOL usesLargeFont = [self usesLargeFont];
-        HUD_FONT_SIZE = (usesLargeFont ? HUD_MAX_FONT_SIZE : HUD_MIN_FONT_SIZE);
-        [_blurView.layer setCornerRadius:(usesLargeFont ? HUD_MAX_CORNER_RADIUS : HUD_MIN_CORNER_RADIUS)];
-    } else {
-        CGFloat realCustomFontSize = MIN(MAX([self realCustomFontSize], 8), 12);
-        HUD_FONT_SIZE = realCustomFontSize;
-        [_blurView.layer setCornerRadius:realCustomFontSize / 2.0];
-    }
-
-    BOOL usesInvertedColor = [self usesInvertedColor];
-    HUD_FONT_WEIGHT = (usesInvertedColor ? UIFontWeightMedium : UIFontWeightRegular);
-    HUD_INACTIVE_OPACITY = (usesInvertedColor ? 1.0 : 0.667);
-    [_blurView setEffect:(usesInvertedColor ? nil : _blurEffect)];
-    [_speedLabel setColorInvertEnabled:usesInvertedColor];
-    [_lockedView setHidden:usesInvertedColor];
-
-    BOOL hideAtSnapshot = [self hideAtSnapshot];
-    if (hideAtSnapshot) {
-        [_containerView setupContainerAsHideContentInScreenshots];
-    } else {
-        [_containerView setupContainerAsDisplayContentInScreenshots];
-    }
-
-    BOOL displayMode = [self displayMode];
-    HUD_DISPLAY_MODE = displayMode;
-
-    prevInputBytes = 0;
-    prevOutputBytes = 0;
-    needsBaselineReset = YES;
-    prevDirtyFrameCount = 0;
-    needsFPSBaselineReset = YES;
-    attributedUploadPrefix = nil;
-    attributedDownloadPrefix = nil;
-
     [self removeAllAnimations];
     [self resetGestureRecognizers];
     [self updateViewConstraints];
-
-    if (!_isFocused) {
-        [self onFocus:_contentView];
-    } else {
-        [self keepFocus:_contentView];
-    }
-
-    [self performSelector:@selector(onBlur:) withObject:_contentView afterDelay:IDLE_INTERVAL];
 }
 
 + (BOOL)passthroughMode
@@ -833,69 +781,43 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
 
 - (void)updateSpeedLabel
 {
-    log_debug(OS_LOG_DEFAULT, "updateSpeedLabel");
-    NSAttributedString *attributedText;
-    if (HUD_DISPLAY_MODE == 1) {
-        attributedText = formattedFPSAttributedString(_isFocused);
-    } else {
-        attributedText = formattedAttributedString(_isFocused);
-    }
-    if (attributedText) {
-        [_speedLabel setAttributedText:attributedText];
-    }
-    [_speedLabel sizeToFit];
+    // 已改用 ImGui 渲染，不再更新网速标签
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    /* Just put your HUD view here */
 
-    _contentView = [[UIView alloc] init];
-    _contentView.backgroundColor = [UIColor clearColor];
-    _contentView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:_contentView];
+    // ImGui Metal 全屏叠加层，替代原网速 HUD
+    _imguiView = [[ImGuiHUDView alloc] initWithFrame:self.view.bounds];
+    _imguiView.translatesAutoresizingMaskIntoConstraints = NO;
+    _imguiView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_imguiView];
 
-    _blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    _blurView = [[UIVisualEffectView alloc] initWithEffect:_blurEffect];
-    _blurView.layer.cornerRadius = HUD_MIN_CORNER_RADIUS;
-    _blurView.layer.masksToBounds = YES;
-    _blurView.translatesAutoresizingMaskIntoConstraints = NO;
-    _containerView = [[ScreenshotInvisibleContainer alloc] initWithContent:_blurView];
-    _containerView.hiddenContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    [_contentView addSubview:_containerView.hiddenContainer];
+    // 三指双击显示菜单，双指双击隐藏菜单（与 AOV 参考项目一致）
+    UITapGestureRecognizer *showMenuGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImGuiMenu:)];
+    showMenuGesture.numberOfTapsRequired = 2;
+    showMenuGesture.numberOfTouchesRequired = 3;
+    [self.view addGestureRecognizer:showMenuGesture];
 
-    _speedLabel = [[HUDBackdropLabel alloc] initWithFrame:CGRectZero];
-    _speedLabel.numberOfLines = 0;
-    _speedLabel.textAlignment = NSTextAlignmentCenter;
-    _speedLabel.textColor = [UIColor whiteColor];
-    _speedLabel.font = [UIFont systemFontOfSize:HUD_FONT_SIZE];
-    _speedLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [_speedLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisVertical];
-    [_blurView.contentView addSubview:_speedLabel];
-
-    _lockedView = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:@"lock.fill"]];
-    _lockedView.tintColor = [UIColor whiteColor];
-    _lockedView.translatesAutoresizingMaskIntoConstraints = NO;
-    _lockedView.contentMode = UIViewContentModeScaleAspectFit;
-    _lockedView.alpha = 0.0;
-    [_lockedView setContentHuggingPriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisVertical];
-    [_lockedView setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisVertical];
-    [_blurView.contentView addSubview:_lockedView];
-
-    _tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognized:)];
-    _tapGestureRecognizer.numberOfTapsRequired = 1;
-    _tapGestureRecognizer.numberOfTouchesRequired = 1;
-    [_contentView addGestureRecognizer:_tapGestureRecognizer];
-
-    _panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
-    _panGestureRecognizer.minimumNumberOfTouches = 1;
-    _panGestureRecognizer.maximumNumberOfTouches = 1;
-    [_contentView addGestureRecognizer:_panGestureRecognizer];
-
-    [_contentView setUserInteractionEnabled:YES];
+    UITapGestureRecognizer *hideMenuGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideImGuiMenu:)];
+    hideMenuGesture.numberOfTapsRequired = 2;
+    hideMenuGesture.numberOfTouchesRequired = 2;
+    [self.view addGestureRecognizer:hideMenuGesture];
 
     [self reloadUserDefaults];
+}
+
+- (void)showImGuiMenu:(UITapGestureRecognizer *)sender
+{
+    (void)sender;
+    [ImGuiHUDView setMenuVisible:YES];
+}
+
+- (void)hideImGuiMenu:(UITapGestureRecognizer *)sender
+{
+    (void)sender;
+    [ImGuiHUDView setMenuVisible:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -906,8 +828,7 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
 
 - (void)resetLoopTimer
 {
-    [_timer invalidate];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:UPDATE_INTERVAL target:self selector:@selector(updateSpeedLabel) userInfo:nil repeats:YES];
+    // ImGui 使用 MTKView 自驱动渲染，无需网速刷新定时器
 }
 
 - (void)stopLoopTimer
@@ -928,6 +849,18 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
 {
     [NSLayoutConstraint deactivateConstraints:_constraints];
     [_constraints removeAllObjects];
+
+    if (_imguiView) {
+        [_constraints addObjectsFromArray:@[
+            [_imguiView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+            [_imguiView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+            [_imguiView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+            [_imguiView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        ]];
+        [NSLayoutConstraint activateConstraints:_constraints];
+        [super updateViewConstraints];
+        return;
+    }
 
     BOOL isLandscape;
     if (_orientation == UIInterfaceOrientationUnknown) {
@@ -1160,11 +1093,17 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
 
 - (void)removeAllAnimations
 {
-    [_contentView.layer removeAllAnimations];
+    [_imguiView.layer removeAllAnimations];
+    if (_contentView) {
+        [_contentView.layer removeAllAnimations];
+    }
 }
 
 - (void)resetGestureRecognizers
 {
+    if (!_contentView) {
+        return;
+    }
     for (UIGestureRecognizer *recognizer in _contentView.gestureRecognizers)
     {
         [recognizer setEnabled:NO];
@@ -1190,29 +1129,7 @@ static const CACornerMask kCornerMaskAll = kCALayerMinXMinYCorner | kCALayerMaxX
 
 - (void)flashLockedViewWithDuration:(NSTimeInterval)duration
 {
-    [_lockedView.layer removeAllAnimations];
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation.fromValue = [NSNumber numberWithFloat:0.0];
-    animation.toValue = [NSNumber numberWithFloat:1.0];
-    animation.duration = duration;
-    animation.autoreverses = YES;
-    animation.repeatCount = 1;
-    animation.removedOnCompletion = YES;
-    animation.fillMode = kCAFillModeForwards;
-    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [_lockedView.layer addAnimation:animation forKey:@"opacity"];
-
-    [_speedLabel.layer removeAllAnimations];
-    CABasicAnimation *animationReverse = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animationReverse.fromValue = [NSNumber numberWithFloat:1.0];
-    animationReverse.toValue = [NSNumber numberWithFloat:0.0];
-    animationReverse.duration = duration;
-    animationReverse.autoreverses = YES;
-    animationReverse.repeatCount = 1;
-    animationReverse.removedOnCompletion = YES;
-    animationReverse.fillMode = kCAFillModeForwards;
-    animationReverse.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [_speedLabel.layer addAnimation:animationReverse forKey:@"opacity"];
+    (void)duration;
 }
 
 - (void)panGestureRecognized:(UIPanGestureRecognizer *)sender
@@ -1320,25 +1237,9 @@ static inline CGRect orientationBounds(UIInterfaceOrientation orientation, CGRec
 
     if (!usesRotation)
     {
-        [self onBlur:_contentView duration:0];
-
-        if (orientation == UIInterfaceOrientationPortrait)
-        {
-            __weak typeof(self) weakSelf = self;
-            [UIView animateWithDuration:duration animations:^{
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                strongSelf->_contentView.alpha = strongSelf->_isFocused ? 1.0 : HUD_INACTIVE_OPACITY;
-            }];
+        if (_imguiView) {
+            _imguiView.alpha = (orientation == UIInterfaceOrientationPortrait) ? 1.0 : 0.0;
         }
-        else
-        {
-            __weak typeof(self) weakSelf = self;
-            [UIView animateWithDuration:duration animations:^{
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                strongSelf->_contentView.alpha = 0.0;
-            }];
-        }
-
         return;
     }
 
@@ -1347,7 +1248,6 @@ static inline CGRect orientationBounds(UIInterfaceOrientation orientation, CGRec
     }
 
     _orientation = orientation;
-    [self cancelPreviousPerformRequestsWithTarget:_contentView];
 
     CGRect bounds = orientationBounds(orientation, [UIScreen mainScreen].bounds);
     [self.view setNeedsUpdateConstraints];
@@ -1355,7 +1255,6 @@ static inline CGRect orientationBounds(UIInterfaceOrientation orientation, CGRec
     [self.view setBounds:bounds];
 
     [self resetGestureRecognizers];
-    [self onBlur:_contentView duration:duration];
 
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:duration animations:^{

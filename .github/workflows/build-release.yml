@@ -50,21 +50,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: Lessica/TrollSpeed
-          ref: main
-          path: TrollSpeed
           submodules: recursive
 
       - name: Setup build environment
         run: |
           echo "Available SDKs: $(find $THEOS/sdks -name "*.sdk" -maxdepth 1 -print)"
           echo "FINALPACKAGE=1" >> $GITHUB_ENV
-          cd $GITHUB_WORKSPACE/TrollSpeed
           echo "PKG_VERSION=$(./get-version.sh)" >> $GITHUB_ENV
 
       - name: Build package
         run: |
-          cd $GITHUB_WORKSPACE/TrollSpeed
           ./gen-control.sh
           ./build.sh
           THEOS_PACKAGE_SCHEME=roothide FINALPACKAGE=1 gmake clean package
@@ -73,7 +68,6 @@ jobs:
 
       - name: Collect symbols
         run: |
-          cd $GITHUB_WORKSPACE/TrollSpeed
           find .theos/obj -name "*.dSYM" -print | zip -r packages/TrollSpeed_${{ env.PKG_VERSION }}_symbols.zip -@
 
       - name: Upload artifacts
@@ -81,23 +75,23 @@ jobs:
         with:
           name: TrollSpeed_${{ env.PKG_VERSION }}
           path: |
-            TrollSpeed/packages/TrollSpeed_*.tipa
-            TrollSpeed/packages/TrollSpeed+AppIntents16_*.tipa
-            TrollSpeed/packages/ch.xxtou.hudapp.jb_*.deb
+            packages/TrollSpeed_*.tipa
+            packages/TrollSpeed+AppIntents16_*.tipa
+            packages/ch.xxtou.hudapp.jb_*.deb
 
       - name: Upload symbols
         uses: actions/upload-artifact@v4
         with:
           name: TrollSpeed_${{ env.PKG_VERSION }}_symbols
           path: |
-            TrollSpeed/packages/TrollSpeed_${{ env.PKG_VERSION }}_symbols.zip
+            packages/TrollSpeed_${{ env.PKG_VERSION }}_symbols.zip
 
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.PKG_VERSION }}
-          body_path: TrollSpeed/CHANGELOG.md
+          body_path: CHANGELOG.md
           files: |
-            TrollSpeed/packages/TrollSpeed_*.tipa
-            TrollSpeed/packages/TrollSpeed+AppIntents16_*.tipa
-            TrollSpeed/packages/ch.xxtou.hudapp.jb_*.deb
+            packages/TrollSpeed_*.tipa
+            packages/TrollSpeed+AppIntents16_*.tipa
+            packages/ch.xxtou.hudapp.jb_*.deb

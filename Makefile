@@ -17,6 +17,8 @@ TrollSpeed_FILES += $(wildcard sources/*.swift)
 TrollSpeed_FILES += $(wildcard sources/SPLarkController/*.swift)
 TrollSpeed_FILES += $(wildcard sources/SnapshotSafeView/*.swift)
 
+TrollSpeed_FILES += $(wildcard IMGUI/*.cpp) $(wildcard IMGUI/*.mm)
+
 ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
 TrollSpeed_FILES += libroot/dyn.c
 TrollSpeed_LIBRARIES += roothide
@@ -28,15 +30,23 @@ endif
 TrollSpeed_CFLAGS += -fobjc-arc
 TrollSpeed_CFLAGS += -Iheaders
 TrollSpeed_CFLAGS += -Isources
+TrollSpeed_CFLAGS += -IIMGUI
 TrollSpeed_CFLAGS += -Isources/KIF
 TrollSpeed_CFLAGS += -include supports/hudapp-prefix.pch
 MainApplication.mm_CCFLAGS += -std=c++14
+ImGuiHUDView.mm_CCFLAGS += -std=c++11 -fno-rtti
+IMGUI/imgui.cpp_CCFLAGS += -std=c++11 -fno-rtti
+IMGUI/imgui_draw.cpp_CCFLAGS += -std=c++11 -fno-rtti
+IMGUI/imgui_widgets.cpp_CCFLAGS += -std=c++11 -fno-rtti
+IMGUI/imgui_tables.cpp_CCFLAGS += -std=c++11 -fno-rtti
+IMGUI/imgui_demo.cpp_CCFLAGS += -std=c++11 -fno-rtti
+IMGUI/imgui_impl_metal.mm_CCFLAGS += -std=c++11 -fno-rtti
 
 TrollSpeed_SWIFT_BRIDGING_HEADER += supports/hudapp-bridging-header.h
 
 TrollSpeed_LDFLAGS += -Flibraries
 
-TrollSpeed_FRAMEWORKS += CoreGraphics CoreServices QuartzCore IOKit UIKit
+TrollSpeed_FRAMEWORKS += CoreGraphics CoreServices QuartzCore IOKit UIKit Metal MetalKit
 TrollSpeed_PRIVATE_FRAMEWORKS += BackBoardServices GraphicsServices SpringBoardServices
 TrollSpeed_CODESIGN_FLAGS += -Ssupports/entitlements.plist
 
