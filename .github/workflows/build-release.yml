@@ -8,7 +8,6 @@ on:
       - "v*.*.*"
 
 env:
-  THEOS: ''
   PKG_VERSION: ''
   XCODE_VERSION: '15.4'
 
@@ -27,6 +26,11 @@ jobs:
         run: |
           HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install dpkg make libplist openssl@3 ldid-procursus
           echo "/usr/local/opt/make/libexec/gnubin" >> $GITHUB_PATH
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Checkout roothide/theos
         uses: actions/checkout@v4
@@ -47,11 +51,6 @@ jobs:
           ref: master
           path: ${{ env.THEOS }}/sdks
 
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
       - name: Setup build environment
         run: |
           echo "Available SDKs: $(find $THEOS/sdks -name "*.sdk" -maxdepth 1 -print)"
@@ -62,9 +61,9 @@ jobs:
         run: |
           ./gen-control.sh
           ./build.sh
-          THEOS_PACKAGE_SCHEME=roothide FINALPACKAGE=1 gmake clean package
-          THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1 gmake clean package
-          FINALPACKAGE=1 gmake clean package
+          THEOS="$GITHUB_WORKSPACE/theos" THEOS_PACKAGE_SCHEME=roothide FINALPACKAGE=1 gmake clean package
+          THEOS="$GITHUB_WORKSPACE/theos" THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1 gmake clean package
+          THEOS="$GITHUB_WORKSPACE/theos" FINALPACKAGE=1 gmake clean package
 
       - name: Collect symbols
         run: |
