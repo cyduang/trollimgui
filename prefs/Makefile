@@ -9,7 +9,6 @@ BUNDLE_NAME += TrollSpeedPrefs
 TrollSpeedPrefs_FILES += TSPrefsRootListController.m
 
 ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
-TrollSpeedPrefs_FILES += ../libroot/dyn.c
 TrollSpeedPrefs_LIBRARIES += roothide
 endif
 

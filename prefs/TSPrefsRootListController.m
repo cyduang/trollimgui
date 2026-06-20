@@ -1,7 +1,14 @@
 #import <Foundation/Foundation.h>
 #import <Preferences/PSSpecifier.h>
 
+#if __has_include(<roothide.h>)
+#import <roothide.h>
+#ifndef JBROOT_PATH_NSSTRING
+#define JBROOT_PATH_NSSTRING(nsPath) jbroot(nsPath)
+#endif
+#elif __has_include(<libroot.h>)
 #import <libroot.h>
+#endif
 
 #import "TSPrefsRootListController.h"
 
