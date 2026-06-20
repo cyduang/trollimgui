@@ -217,16 +217,16 @@ void ImGui_ImplIOS_RenderDrawData(ImDrawData *draw_data, CGContextRef context, i
             const int clipX1 = (int)clipRect.z;
             const int clipY1 = (int)clipRect.w;
 
-            CGImageRef texture = (CGImageRef)pcmd->GetTexID();
+            const ImTextureID texId = pcmd->TextureId;
             const unsigned char *texBytes = nullptr;
             int texWidth = 0;
             int texHeight = 0;
-            if (pcmd->GetTexID() == (ImTextureID)(intptr_t)1) {
+            if (texId == (ImTextureID)(intptr_t)1) {
                 texBytes = g_FontPixels;
                 texWidth = g_FontWidth;
                 texHeight = g_FontHeight;
             }
-            (void)texture;
+            (void)texId;
 
             for (unsigned int i = 0; i + 2 < pcmd->ElemCount; i += 3) {
                 const ImDrawIdx idx0 = idxBuffer[pcmd->IdxOffset + i];
@@ -250,7 +250,7 @@ void ImGui_ImplIOS_RenderDrawData(ImDrawData *draw_data, CGContextRef context, i
                     v0.col,
                     v1.col,
                     v2.col,
-                    pcmd->GetTexID(),
+                    texId,
                     texWidth,
                     texHeight,
                     texBytes,
