@@ -8,11 +8,8 @@ BUNDLE_NAME += TrollSpeedPrefs
 
 TrollSpeedPrefs_FILES += TSPrefsRootListController.m
 
-ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
-TrollSpeedPrefs_LIBRARIES += roothide
-endif
-
 TrollSpeedPrefs_CFLAGS += -fobjc-arc
+TrollSpeedPrefs_CFLAGS += -DDISABLE_PATH_REDIRECTION=1
 TrollSpeedPrefs_CFLAGS += -I../supports/
 
 TrollSpeedPrefs_FRAMEWORKS += UIKit

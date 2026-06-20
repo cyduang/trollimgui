@@ -317,7 +317,7 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
     }
 
     // Reset custom user defaults
-    BOOL removed = [[NSFileManager defaultManager] removeItemAtPath:(JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH)) error:nil];
+    BOOL removed = [[NSFileManager defaultManager] removeItemAtPath:TS_JBROOT_PATH(USER_DEFAULTS_PATH) error:nil];
     if (removed)
     {
         // Terminate HUD
@@ -331,13 +331,13 @@ static const CGFloat _gAuthorLabelBottomConstraintConstantRegular = -80.f;
 - (void)loadUserDefaults:(BOOL)forceReload
 {
     if (forceReload || !_userDefaults) {
-        _userDefaults = [[NSDictionary dictionaryWithContentsOfFile:(JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH))] mutableCopy] ?: [NSMutableDictionary dictionary];
+        _userDefaults = [[NSDictionary dictionaryWithContentsOfFile:TS_JBROOT_PATH(USER_DEFAULTS_PATH)] mutableCopy] ?: [NSMutableDictionary dictionary];
     }
 }
 
 - (void)saveUserDefaults
 {
-    [_userDefaults writeToFile:(JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH)) atomically:YES];
+    [_userDefaults writeToFile:TS_JBROOT_PATH(USER_DEFAULTS_PATH) atomically:YES];
     notify_post(NOTIFY_RELOAD_HUD);
 }
 

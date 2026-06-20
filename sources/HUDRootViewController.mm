@@ -129,7 +129,7 @@ static void SpringBoardLockStatusChanged
 - (void)loadUserDefaults:(BOOL)forceReload
 {
     if (forceReload || !_userDefaults) {
-        _userDefaults = [[NSDictionary dictionaryWithContentsOfFile:(JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH))] mutableCopy] ?: [NSMutableDictionary dictionary];
+        _userDefaults = [[NSDictionary dictionaryWithContentsOfFile:TS_JBROOT_PATH(USER_DEFAULTS_PATH)] mutableCopy] ?: [NSMutableDictionary dictionary];
     }
 }
 
@@ -141,7 +141,7 @@ static void SpringBoardLockStatusChanged
 
 + (BOOL)passthroughMode
 {
-    return [[[NSDictionary dictionaryWithContentsOfFile:(JBROOT_PATH_NSSTRING(USER_DEFAULTS_PATH))] objectForKey:HUDUserDefaultsKeyPassthroughMode] boolValue];
+    return [[[NSDictionary dictionaryWithContentsOfFile:TS_JBROOT_PATH(USER_DEFAULTS_PATH)] objectForKey:HUDUserDefaultsKeyPassthroughMode] boolValue];
 }
 
 - (BOOL)usesRotation

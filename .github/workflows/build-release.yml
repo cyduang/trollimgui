@@ -32,10 +32,10 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Checkout roothide/theos
+      - name: Checkout theos
         uses: actions/checkout@v4
         with:
-          repository: roothide/theos
+          repository: theos/theos
           path: theos
           submodules: recursive
 
@@ -61,8 +61,6 @@ jobs:
         run: |
           ./gen-control.sh
           ./build.sh
-          THEOS="$GITHUB_WORKSPACE/theos" THEOS_PACKAGE_SCHEME=roothide FINALPACKAGE=1 gmake clean package
-          THEOS="$GITHUB_WORKSPACE/theos" THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1 gmake clean package
           THEOS="$GITHUB_WORKSPACE/theos" FINALPACKAGE=1 gmake clean package
 
       - name: Collect symbols
@@ -76,7 +74,6 @@ jobs:
           path: |
             packages/TrollSpeed_*.tipa
             packages/TrollSpeed+AppIntents16_*.tipa
-            packages/ch.xxtou.hudapp.jb_*.deb
 
       - name: Upload symbols
         uses: actions/upload-artifact@v4
@@ -93,4 +90,3 @@ jobs:
           files: |
             packages/TrollSpeed_*.tipa
             packages/TrollSpeed+AppIntents16_*.tipa
-            packages/ch.xxtou.hudapp.jb_*.deb

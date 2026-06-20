@@ -19,14 +19,11 @@ TrollSpeed_FILES += $(wildcard sources/SnapshotSafeView/*.swift)
 
 TrollSpeed_FILES += $(wildcard IMGUI/*.cpp) $(wildcard IMGUI/*.mm)
 
-ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
-TrollSpeed_LIBRARIES += roothide
-endif
-
 # App Intents will be built from Xcode.
 # TrollSpeed_FILES += $(wildcard sources/Intents/*.swift)
 
 TrollSpeed_CFLAGS += -fobjc-arc
+TrollSpeed_CFLAGS += -DDISABLE_PATH_REDIRECTION=1
 TrollSpeed_CFLAGS += -Iheaders
 TrollSpeed_CFLAGS += -Isources
 TrollSpeed_CFLAGS += -IIMGUI
@@ -51,8 +48,8 @@ TrollSpeed_CODESIGN_FLAGS += -Ssupports/entitlements.plist
 
 include $(THEOS_MAKE_PATH)/application.mk
 
-SUBPROJECTS += prefs
 ifneq ($(FINALPACKAGE),1)
+SUBPROJECTS += prefs
 SUBPROJECTS += memory_pressure
 endif
 
@@ -64,8 +61,10 @@ before-all::
 	$(ECHO_NOTHING)chmod 0644 $(LAUNCHD_PLIST)$(ECHO_END)
 
 before-package::
-	$(ECHO_NOTHING)mv -f $(THEOS_STAGING_DIR)/usr/local/bin/memory_pressure $(THEOS_STAGING_DIR)/Applications/TrollSpeed.app || true$(ECHO_END)
-	$(ECHO_NOTHING)rmdir $(THEOS_STAGING_DIR)/usr/local/bin $(THEOS_STAGING_DIR)/usr/local $(THEOS_STAGING_DIR)/usr || true$(ECHO_END)
+	$(ECHO_NOTHING)mv -f $(THEOS_STAGING_DIR)/usr/local/bin/memory_pressure $(THEOS_STAGING_DIR)/Applications/TrollSpeed.app 2>/dev/null || true$(ECHO_END)
+	$(ECHO_NOTHING)rmdir $(THEOS_STAGING_DIR)/usr/local/bin 2>/dev/null || true$(ECHO_END)
+	$(ECHO_NOTHING)rmdir $(THEOS_STAGING_DIR)/usr/local 2>/dev/null || true$(ECHO_END)
+	$(ECHO_NOTHING)rmdir $(THEOS_STAGING_DIR)/usr 2>/dev/null || true$(ECHO_END)
 
 after-package::
 	$(ECHO_NOTHING)mkdir -p packages $(THEOS_STAGING_DIR)/Payload$(ECHO_END)

@@ -1,14 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <Preferences/PSSpecifier.h>
 
-#if __has_include(<roothide.h>)
-#import <roothide.h>
-#ifndef JBROOT_PATH_NSSTRING
-#define JBROOT_PATH_NSSTRING(nsPath) jbroot(nsPath)
-#endif
-#elif __has_include(<libroot.h>)
-#import <libroot.h>
-#endif
+#import "TSPathRedirect.h"
 
 #import "TSPrefsRootListController.h"
 
@@ -23,7 +16,7 @@
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier {
     NSString *path = [NSString
-        stringWithFormat:JBROOT_PATH_NSSTRING(@"/var/mobile/Library/Preferences/%@.plist"), specifier.properties[@"defaults"]];
+        stringWithFormat:TS_JBROOT_PATH(@"/var/mobile/Library/Preferences/%@.plist"), specifier.properties[@"defaults"]];
     NSMutableDictionary *settings = [NSMutableDictionary dictionary];
     [settings addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:path]];
     return (settings[specifier.properties[@"key"]]) ?: specifier.properties[@"default"];
@@ -31,7 +24,7 @@
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
     NSString *path = [NSString
-        stringWithFormat:JBROOT_PATH_NSSTRING(@"/var/mobile/Library/Preferences/%@.plist"), specifier.properties[@"defaults"]];
+        stringWithFormat:TS_JBROOT_PATH(@"/var/mobile/Library/Preferences/%@.plist"), specifier.properties[@"defaults"]];
     NSMutableDictionary *settings = [NSMutableDictionary dictionary];
     [settings addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:path]];
     [settings setObject:value forKey:specifier.properties[@"key"]];
@@ -45,7 +38,7 @@
 
 - (void)resetToDefaults:(PSSpecifier *)specifier {
     NSString *path = [NSString
-        stringWithFormat:JBROOT_PATH_NSSTRING(@"/var/mobile/Library/Preferences/%@.plist"), specifier.properties[@"defaults"]];
+        stringWithFormat:TS_JBROOT_PATH(@"/var/mobile/Library/Preferences/%@.plist"), specifier.properties[@"defaults"]];
     NSMutableDictionary *settings = [NSMutableDictionary dictionary];
     [settings writeToFile:path atomically:YES];
     CFStringRef notificationName = (__bridge CFStringRef)specifier.properties[@"PostNotification"];
