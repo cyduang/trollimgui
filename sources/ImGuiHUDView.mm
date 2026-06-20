@@ -142,7 +142,7 @@ static BOOL s_imguiInitialized = NO;
         8,
         width * 4,
         colorSpace,
-        kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+        (CGBitmapInfo)(kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big));
     CGColorSpaceRelease(colorSpace);
 }
 
@@ -221,7 +221,7 @@ static BOOL s_imguiInitialized = NO;
     const int sides = 10;
     ImVec2 points[10];
     for (int i = 0; i < sides; ++i) {
-        const float angle = ((float)i / (float)sides) * IM_PI * 2.0f - IM_PI * 0.5f;
+        const float angle = ((float)i / (float)sides) * (float)M_PI * 2.0f - (float)M_PI * 0.5f;
         points[i] = ImVec2(center.x + cosf(angle) * radius, center.y + sinf(angle) * radius);
     }
     drawList->AddConvexPolyFilled(points, sides, IM_COL32(255, 0, 0, 40));
