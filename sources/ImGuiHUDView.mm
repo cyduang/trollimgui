@@ -8,6 +8,7 @@
 #import "ImGuiHUDView.h"
 
 #import <QuartzCore/QuartzCore.h>
+#import <math.h>
 
 #import "imgui.h"
 #import "imgui_impl_ios_cg.h"
