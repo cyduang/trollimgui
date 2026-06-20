@@ -93,7 +93,6 @@ static void SpringBoardLockStatusChanged
 
 @implementation HUDRootViewController {
     NSMutableDictionary *_userDefaults;
-    NSMutableArray<NSLayoutConstraint *> *_constraints;
     ImGuiHUDView *_imguiView;
     FBSOrientationObserver *_orientationObserver;
     UIInterfaceOrientation _orientation;
@@ -136,7 +135,24 @@ static void SpringBoardLockStatusChanged
 - (void)reloadUserDefaults
 {
     [self loadUserDefaults:YES];
-    [self updateViewConstraints];
+
+    NSNumber *displayMode = [_userDefaults objectForKey:HUDUserDefaultsKeyDisplayMode];
+    BOOL showDemo = displayMode ? [displayMode boolValue] : NO;
+    [ImGuiHUDView setShowDemoWindow:showDemo];
+    [ImGuiHUDView setMenuVisible:YES];
+}
+
+- (ImGuiHUDView *)imguiView
+{
+    return (ImGuiHUDView *)self.view;
+}
+
+- (void)loadView
+{
+    CGRect bounds = [UIScreen mainScreen].bounds;
+    _imguiView = [[ImGuiHUDView alloc] initWithFrame:bounds];
+    _imguiView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.view = _imguiView;
 }
 
 + (BOOL)passthroughMode
@@ -155,7 +171,6 @@ static void SpringBoardLockStatusChanged
 {
     self = [super init];
     if (self) {
-        _constraints = [NSMutableArray array];
         [self registerNotifications];
         _orientationObserver = [[objc_getClass("FBSOrientationObserver") alloc] init];
         __weak HUDRootViewController *weakSelf = self;
@@ -178,10 +193,8 @@ static void SpringBoardLockStatusChanged
 {
     [super viewDidLoad];
 
-    _imguiView = [[ImGuiHUDView alloc] initWithFrame:self.view.bounds];
-    _imguiView.translatesAutoresizingMaskIntoConstraints = NO;
-    _imguiView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_imguiView];
+    self.view.backgroundColor = [UIColor clearColor];
+    self.view.opaque = NO;
 
     // 三指双击显示菜单，双指双击隐藏菜单
     UITapGestureRecognizer *showMenuGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImGuiMenu:)];
@@ -212,6 +225,13 @@ static void SpringBoardLockStatusChanged
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+
+    if (_imguiView) {
+        _imguiView.paused = NO;
+        [_imguiView setNeedsLayout];
+        [_imguiView layoutIfNeeded];
+    }
+
     notify_post(NOTIFY_LAUNCHED_HUD);
 }
 
@@ -226,24 +246,10 @@ static void SpringBoardLockStatusChanged
 - (void)viewSafeAreaInsetsDidChange
 {
     [super viewSafeAreaInsetsDidChange];
-    [self updateViewConstraints];
 }
 
 - (void)updateViewConstraints
 {
-    [NSLayoutConstraint deactivateConstraints:_constraints];
-    [_constraints removeAllObjects];
-
-    if (_imguiView) {
-        [_constraints addObjectsFromArray:@[
-            [_imguiView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
-            [_imguiView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
-            [_imguiView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
-            [_imguiView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
-        ]];
-    }
-
-    [NSLayoutConstraint activateConstraints:_constraints];
     [super updateViewConstraints];
 }
 
@@ -278,10 +284,11 @@ static inline CGRect orientationBounds(UIInterfaceOrientation orientation, CGRec
 
 - (void)updateOrientation:(UIInterfaceOrientation)orientation animateWithDuration:(NSTimeInterval)duration
 {
+    if (_imguiView) {
+        _imguiView.alpha = 1.0;
+    }
+
     if (![self usesRotation]) {
-        if (_imguiView) {
-            _imguiView.alpha = (orientation == UIInterfaceOrientationPortrait) ? 1.0 : 0.0;
-        }
         return;
     }
 

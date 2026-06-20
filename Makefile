@@ -31,6 +31,7 @@ TrollSpeed_CFLAGS += -Isources/KIF
 TrollSpeed_CFLAGS += -include supports/hudapp-prefix.pch
 MainApplication.mm_CCFLAGS += -std=c++14
 ImGuiHUDView.mm_CCFLAGS += -std=c++11 -fno-rtti
+IMGUI/imgui_impl_ios_cg.mm_CCFLAGS += -std=c++11 -fno-rtti
 IMGUI/imgui.cpp_CCFLAGS += -std=c++11 -fno-rtti
 IMGUI/imgui_draw.cpp_CCFLAGS += -std=c++11 -fno-rtti
 IMGUI/imgui_widgets.cpp_CCFLAGS += -std=c++11 -fno-rtti
@@ -42,8 +43,8 @@ TrollSpeed_SWIFT_BRIDGING_HEADER += supports/hudapp-bridging-header.h
 
 TrollSpeed_LDFLAGS += -Flibraries
 
-TrollSpeed_FRAMEWORKS += CoreGraphics CoreServices QuartzCore IOKit UIKit Metal MetalKit
-TrollSpeed_PRIVATE_FRAMEWORKS += BackBoardServices GraphicsServices SpringBoardServices
+TrollSpeed_FRAMEWORKS += CoreGraphics CoreServices QuartzCore IOKit UIKit
+TrollSpeed_PRIVATE_FRAMEWORKS += BackBoardServices GraphicsServices SpringBoardServices FrontBoard
 TrollSpeed_CODESIGN_FLAGS += -Ssupports/entitlements.plist
 
 include $(THEOS_MAKE_PATH)/application.mk

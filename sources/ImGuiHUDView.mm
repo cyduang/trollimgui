@@ -2,29 +2,34 @@
 //  ImGuiHUDView.mm
 //  TrollSpeed
 //
-//  基于 Metal + MTKView 的 ImGui HUD 渲染，参考 AOV-MENU-IMGUI-IOS-NONJB 项目。
+//  使用 CoreGraphics 软件渲染 ImGui，兼容系统 overlay / FrontBoard Scene。
 //
 
 #import "ImGuiHUDView.h"
 
-#import <Metal/Metal.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "imgui.h"
-#import "imgui_impl_metal.h"
+#import "imgui_impl_ios_cg.h"
 
-@interface ImGuiHUDView () <MTKViewDelegate>
-@property (nonatomic, strong) id<MTLCommandQueue> commandQueue;
+@interface ImGuiHUDView ()
+@property (nonatomic, strong) CADisplayLink *displayLink;
+@property (nonatomic, assign) CGContextRef bitmapContext;
+@property (nonatomic, assign) int bufferWidth;
+@property (nonatomic, assign) int bufferHeight;
 @end
 
 @implementation ImGuiHUDView
 
 static BOOL s_menuVisible = YES;
-static BOOL s_showDemoWindow = YES;
+static BOOL s_showDemoWindow = NO;
 static BOOL s_showHelloWindow = YES;
+static BOOL s_imguiInitialized = NO;
 
 + (void)setMenuVisible:(BOOL)visible
 {
     s_menuVisible = visible;
+    s_showHelloWindow = visible;
 }
 
 + (BOOL)isMenuVisible
@@ -32,45 +37,115 @@ static BOOL s_showHelloWindow = YES;
     return s_menuVisible;
 }
 
++ (void)setShowDemoWindow:(BOOL)visible
+{
+    s_showDemoWindow = visible;
+}
+
+- (void)setupImGuiIfNeeded
+{
+    if (s_imguiInitialized) {
+        return;
+    }
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.IniFilename = nullptr;
+    ImGui::StyleColorsDark();
+    io.Fonts->AddFontDefault();
+    io.Fonts->Build();
+    ImGui_ImplIOS_Init();
+    s_imguiInitialized = YES;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
-    id<MTLDevice> device = MTLCreateSystemDefaultDevice();
-    self = [super initWithFrame:frame device:device];
+    self = [super initWithFrame:frame];
     if (self) {
-        if (!device) {
-            return nil;
-        }
-
-        _commandQueue = [device newCommandQueue];
-
-        self.delegate = self;
-        self.clearColor = MTLClearColorMake(0, 0, 0, 0);
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = UIColor.clearColor;
         self.opaque = NO;
         self.layer.opaque = NO;
-        self.enableSetNeedsDisplay = NO;
-        self.paused = NO;
-        self.preferredFramesPerSecond = 60;
+        self.userInteractionEnabled = YES;
+        self.multipleTouchEnabled = YES;
+        self.contentMode = UIViewContentModeRedraw;
 
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO &io = ImGui::GetIO();
-        (void)io;
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        [self setupImGuiIfNeeded];
 
-        ImGui::StyleColorsDark();
-        ImGui_ImplMetal_Init(device);
+        _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(onDisplayLink:)];
+        _displayLink.preferredFramesPerSecond = 60;
+        [_displayLink addToRunLoop:NSRunLoop.mainRunLoop forMode:NSRunLoopCommonModes];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    ImGui_ImplMetal_Shutdown();
-    ImGui::DestroyContext();
+    [_displayLink invalidate];
+    [self releaseBitmapContext];
+    if (s_imguiInitialized) {
+        ImGui_ImplIOS_Shutdown();
+        ImGui::DestroyContext();
+        s_imguiInitialized = NO;
+    }
 }
 
-#pragma mark - 触摸输入
+- (void)didMoveToWindow
+{
+    [super didMoveToWindow];
+    self.displayLink.paused = (self.window == nil);
+    if (self.window) {
+        self.contentScaleFactor = self.window.screen.scale;
+        [self ensureBitmapContext];
+    }
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self ensureBitmapContext];
+}
+
+- (void)releaseBitmapContext
+{
+    if (_bitmapContext) {
+        CGContextRelease(_bitmapContext);
+        _bitmapContext = nullptr;
+    }
+    _bufferWidth = 0;
+    _bufferHeight = 0;
+}
+
+- (void)ensureBitmapContext
+{
+    CGFloat scale = self.window.screen.scale ?: UIScreen.mainScreen.scale;
+    int width = (int)(self.bounds.size.width * scale);
+    int height = (int)(self.bounds.size.height * scale);
+    if (width < 2 || height < 2) {
+        return;
+    }
+    if (_bitmapContext && width == _bufferWidth && height == _bufferHeight) {
+        return;
+    }
+
+    [self releaseBitmapContext];
+    _bufferWidth = width;
+    _bufferHeight = height;
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    _bitmapContext = CGBitmapContextCreate(
+        nullptr,
+        width,
+        height,
+        8,
+        width * 4,
+        colorSpace,
+        kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    CGColorSpaceRelease(colorSpace);
+}
+
+#pragma mark - 触摸
 
 - (void)updateIOWithTouchEvent:(UIEvent *)event
 {
@@ -121,58 +196,73 @@ static BOOL s_showHelloWindow = YES;
     [self updateIOWithTouchEvent:event];
 }
 
-#pragma mark - MTKViewDelegate
+#pragma mark - 渲染
 
-- (void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size
+- (void)onDisplayLink:(CADisplayLink *)link
 {
-    (void)view;
-    (void)size;
+    (void)link;
+    if (!s_menuVisible) {
+        self.layer.contents = nil;
+        return;
+    }
+    [self renderFrame];
 }
 
-- (void)drawInMTKView:(MTKView *)view
+- (void)drawCustomOverlayShapes
 {
-    ImGuiIO &io = ImGui::GetIO();
-    io.DisplaySize = ImVec2((float)view.bounds.size.width, (float)view.bounds.size.height);
-
-    CGFloat scale = view.window.screen.scale ?: UIScreen.mainScreen.scale;
-    io.DisplayFramebufferScale = ImVec2((float)scale, (float)scale);
-    io.DeltaTime = 1.0f / (float)(view.preferredFramesPerSecond ?: 60);
-
-    self.userInteractionEnabled = s_menuVisible;
-
-    id<MTLCommandBuffer> commandBuffer = [self.commandQueue commandBuffer];
-    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
-    if (!renderPassDescriptor) {
+    ImDrawList *drawList = ImGui::GetBackgroundDrawList();
+    if (!drawList) {
         return;
     }
 
-    id<MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+    const ImVec2 center(self.bounds.size.width * 0.5f, self.bounds.size.height * 0.5f);
+    const float radius = fminf(self.bounds.size.width, self.bounds.size.height) * 0.22f;
+    const int sides = 10;
+    ImVec2 points[10];
+    for (int i = 0; i < sides; ++i) {
+        const float angle = ((float)i / (float)sides) * IM_PI * 2.0f - IM_PI * 0.5f;
+        points[i] = ImVec2(center.x + cosf(angle) * radius, center.y + sinf(angle) * radius);
+    }
+    drawList->AddConvexPolyFilled(points, sides, IM_COL32(255, 0, 0, 40));
+    drawList->AddPolyline(points, sides, IM_COL32(255, 0, 0, 220), ImDrawFlags_Closed, 3.0f);
+    drawList->AddText(ImVec2(center.x - 70.0f, center.y - 8.0f), IM_COL32(255, 255, 255, 255), "TrollImGui HUD");
+}
 
-    ImGui_ImplMetal_NewFrame(renderPassDescriptor);
+- (void)buildImGuiUI
+{
+    ImGuiIO &io = ImGui::GetIO();
+    io.DisplaySize = ImVec2((float)self.bounds.size.width, (float)self.bounds.size.height);
+    CGFloat scale = self.window.screen.scale ?: UIScreen.mainScreen.scale;
+    io.DisplayFramebufferScale = ImVec2((float)scale, (float)scale);
+    io.DeltaTime = 1.0f / 60.0f;
+
+    self.userInteractionEnabled = s_menuVisible;
+
+    ImGui_ImplIOS_NewFrame();
     ImGui::NewFrame();
 
     if (s_menuVisible) {
-        CGFloat centerX = (view.bounds.size.width - 400.0) / 2.0;
-        CGFloat centerY = (view.bounds.size.height - 300.0) / 2.0;
-        ImGui::SetNextWindowPos(ImVec2((float)centerX, (float)centerY), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(420.0f, 320.0f), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(40.0f, 120.0f), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(360.0f, 280.0f), ImGuiCond_FirstUseEver);
 
-        if (ImGui::Begin("TrollImGui HUD", &s_showHelloWindow)) {
-            ImGui::Text("ImGui 示例窗口");
+        if (ImGui::Begin("Hello, world!", &s_showHelloWindow)) {
+            ImGui::Text("ImGui 桌面 HUD");
             ImGui::Separator();
-            ImGui::Text("应用平均 %.3f ms/帧 (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            ImGui::Text("平均 %.3f ms/帧 (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::Checkbox("显示 ImGui Demo 窗口", &s_showDemoWindow);
 
             static float sliderValue = 0.5f;
             ImGui::SliderFloat("示例滑块", &sliderValue, 0.0f, 1.0f);
 
             static int counter = 0;
-            if (ImGui::Button("点击计数")) {
+            if (ImGui::Button("Button")) {
                 counter++;
             }
             ImGui::SameLine();
-            ImGui::Text("计数 = %d", counter);
-
+            if (ImGui::Button("Button1")) {
+                counter += 10;
+            }
+            ImGui::Text("counter = %d", counter);
             ImGui::End();
         }
 
@@ -185,13 +275,38 @@ static BOOL s_showHelloWindow = YES;
         }
     }
 
+    [self drawCustomOverlayShapes];
     ImGui::Render();
-    ImDrawData *drawData = ImGui::GetDrawData();
-    ImGui_ImplMetal_RenderDrawData(drawData, commandBuffer, renderEncoder);
+}
 
-    [renderEncoder endEncoding];
-    [commandBuffer presentDrawable:view.currentDrawable];
-    [commandBuffer commit];
+- (void)renderFrame
+{
+    if (self.bounds.size.width < 1 || self.bounds.size.height < 1) {
+        return;
+    }
+
+    [self ensureBitmapContext];
+    if (!_bitmapContext) {
+        return;
+    }
+
+    [self buildImGuiUI];
+
+    ImDrawData *drawData = ImGui::GetDrawData();
+    if (!drawData || !drawData->Valid) {
+        return;
+    }
+
+    ImGui_ImplIOS_RenderDrawData(drawData, _bitmapContext, _bufferWidth, _bufferHeight);
+
+    CGImageRef image = CGBitmapContextCreateImage(_bitmapContext);
+    if (!image) {
+        return;
+    }
+
+    self.layer.contents = (__bridge id)image;
+    self.layer.contentsGravity = kCAGravityResize;
+    CGImageRelease(image);
 }
 
 @end

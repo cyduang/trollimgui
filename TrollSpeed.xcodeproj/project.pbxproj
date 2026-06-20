@@ -101,7 +101,8 @@
 		AA11B0072B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */; };
 		AA11B0092B5BF5C6007235A6 /* imgui_tables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */; };
 		AA11B00B2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */; };
-		AA11B00D2B5BF5C6007235A6 /* imgui_impl_metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0082B5BF5C6007235A6 /* imgui_impl_metal.mm */; };
+		AA11B00D2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */; };
+		AA11B0402B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */; };
 		AA11B00F2B5BF5C6007235A6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A0092B5BF5C6007235A6 /* Metal.framework */; };
 		AA11B0112B5BF5C6007235A6 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */; };
 		AA11B0132B5BF5C6007235A6 /* ImGuiHUDView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0022B5BF5C6007235A6 /* ImGuiHUDView.mm */; };
@@ -110,7 +111,8 @@
 		AA11B0192B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */; };
 		AA11B01B2B5BF5C6007235A6 /* imgui_tables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */; };
 		AA11B01D2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */; };
-		AA11B01F2B5BF5C6007235A6 /* imgui_impl_metal.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0082B5BF5C6007235A6 /* imgui_impl_metal.mm */; };
+		AA11B01F2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */; };
+		AA11B0422B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */; };
 		AA11B0212B5BF5C6007235A6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A0092B5BF5C6007235A6 /* Metal.framework */; };
 		AA11B0232B5BF5C6007235A6 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */; };
 /* End PBXBuildFile section */
@@ -224,7 +226,9 @@
 		AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_widgets.cpp; sourceTree = "<group>"; };
 		AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_tables.cpp; sourceTree = "<group>"; };
 		AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_demo.cpp; sourceTree = "<group>"; };
-		AA11A0082B5BF5C6007235A6 /* imgui_impl_metal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = imgui_impl_metal.mm; sourceTree = "<group>"; };
+		AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = imgui_impl_ios_cg.mm; sourceTree = "<group>"; };
+		AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDOverlayScene.mm; sourceTree = "<group>"; };
+		AA11B0432B5BF5C6007235A6 /* HUDOverlayScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HUDOverlayScene.h; sourceTree = "<group>"; };
 		AA11A0092B5BF5C6007235A6 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -339,6 +343,8 @@
 				CC711D462B5BF5C6007235A6 /* TSSettingsController.swift */,
 				AA11A0012B5BF5C6007235A6 /* ImGuiHUDView.h */,
 				AA11A0022B5BF5C6007235A6 /* ImGuiHUDView.mm */,
+				AA11B0432B5BF5C6007235A6 /* HUDOverlayScene.h */,
+				AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */,
 			);
 			path = sources;
 			sourceTree = "<group>";
@@ -459,7 +465,7 @@
 				AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */,
 				AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */,
 				AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */,
-				AA11A0082B5BF5C6007235A6 /* imgui_impl_metal.mm */,
+				AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */,
 			);
 			path = IMGUI;
 			sourceTree = "<group>";
@@ -607,7 +613,8 @@
 				AA11B0072B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */,
 				AA11B0092B5BF5C6007235A6 /* imgui_tables.cpp in Sources */,
 				AA11B00B2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */,
-				AA11B00D2B5BF5C6007235A6 /* imgui_impl_metal.mm in Sources */,
+				AA11B00D2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */,
+				AA11B0402B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -654,7 +661,8 @@
 				AA11B0192B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */,
 				AA11B01B2B5BF5C6007235A6 /* imgui_tables.cpp in Sources */,
 				AA11B01D2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */,
-				AA11B01F2B5BF5C6007235A6 /* imgui_impl_metal.mm in Sources */,
+				AA11B01F2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */,
+				AA11B0422B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +722,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					FrontBoard,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
@@ -762,6 +775,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -947,6 +965,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					FrontBoard,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/libraries",
@@ -999,6 +1022,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

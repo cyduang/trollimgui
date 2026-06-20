@@ -13,7 +13,8 @@
 + (BOOL)_isSystemWindow { return YES; }
 - (BOOL)_isWindowServerHostingManaged { return NO; }
 - (BOOL)_ignoresHitTest { return [HUDRootViewController passthroughMode]; }
-- (BOOL)_isSecure { return YES; }
-- (BOOL)_shouldCreateContextAsSecure { return YES; }
+- (BOOL)_isSecure { return NO; }
+- (BOOL)_shouldCreateContextAsSecure { return NO; }
+- (BOOL)isOpaque { return NO; }
 
 @end
