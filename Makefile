@@ -51,8 +51,8 @@ TrollSpeed_CODESIGN_FLAGS += -Ssupports/entitlements.plist
 
 include $(THEOS_MAKE_PATH)/application.mk
 
-SUBPROJECTS += prefs
 ifneq ($(FINALPACKAGE),1)
+SUBPROJECTS += prefs
 SUBPROJECTS += memory_pressure
 endif
 
