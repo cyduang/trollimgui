@@ -715,10 +715,6 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -731,8 +727,6 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -774,10 +768,6 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -790,8 +780,6 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -968,10 +956,6 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -984,8 +968,6 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1031,10 +1013,6 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -1047,8 +1025,6 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-framework",
-					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

@@ -44,7 +44,7 @@ TrollSpeed_SWIFT_BRIDGING_HEADER += supports/hudapp-bridging-header.h
 TrollSpeed_LDFLAGS += -Flibraries
 
 TrollSpeed_FRAMEWORKS += CoreGraphics CoreServices QuartzCore IOKit UIKit
-TrollSpeed_PRIVATE_FRAMEWORKS += BackBoardServices GraphicsServices SpringBoardServices FrontBoard
+TrollSpeed_PRIVATE_FRAMEWORKS += BackBoardServices GraphicsServices SpringBoardServices
 TrollSpeed_CODESIGN_FLAGS += -Ssupports/entitlements.plist
 
 include $(THEOS_MAKE_PATH)/application.mk
