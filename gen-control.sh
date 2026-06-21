@@ -26,6 +26,15 @@ __EOF__
 
 # Set permissions
 chmod 0644 layout/DEBIAN/control
+# Debian 维护脚本必须可执行（Windows 检出后常为 644）
+if [ -f layout/DEBIAN/prerm ]; then
+    chmod 0755 layout/DEBIAN/prerm
+fi
+for script in layout/DEBIAN/preinst layout/DEBIAN/postinst layout/DEBIAN/postrm; do
+    if [ -f "$script" ]; then
+        chmod 0755 "$script"
+    fi
+done
 
 RAND_BUILD_STR=$(openssl rand -hex 4)
 
