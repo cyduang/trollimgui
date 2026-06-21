@@ -7,6 +7,7 @@ LIBRARY_NAME := imgui
 
 imgui_USE_MODULES := 0
 imgui_INSTALL := 0
+imgui_LINKAGE_TYPE := static
 
 imgui_FILES += $(wildcard ../sources/imgui*.cpp)
 imgui_FILES := $(filter-out ../sources/imgui_demo.cpp,$(imgui_FILES))

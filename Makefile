@@ -31,7 +31,9 @@ sources/HUDRootViewController.mm_CFLAGS += -std=c++11 -fno-rtti
 sources/imgui_impl_metal.mm_CFLAGS += -std=c++11 -fno-rtti
 MainApplication.mm_CFLAGS += -std=c++14
 
-TrollSpeed_LIBRARIES += imgui
+# 子工程须在主应用链接前编译；LIBRARIES 只在 Theos 库目录搜索，不能用于本地 subproject
+TrollSpeed_SUBPROJECTS += libimgui
+TrollSpeed_LDFLAGS += $(foreach arch,$(ARCHS),$(abspath libimgui/.theos/obj)/$(arch)/imgui.a)
 
 TrollSpeed_SWIFT_BRIDGING_HEADER += supports/hudapp-bridging-header.h
 

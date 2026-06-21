@@ -70,6 +70,8 @@ jobs:
             echo 'swiftc must not receive -std=c++11 via -Xcc'
             exit 1
           fi
+          # 主工程链接命令必须包含 libimgui 静态库
+          grep -q -- 'libimgui/.theos/obj/arm64/imgui.a' /tmp/app-dryrun.log
 
       - name: Build tipa with Theos
         run: |
