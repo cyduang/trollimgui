@@ -11,7 +11,11 @@ APPLICATION_NAME := TrollSpeed
 
 TrollSpeed_USE_MODULES := 0
 
+# ImGui 核心 C++ 源文件（排除 demo 减小体积）
+IMGUI_CPP_FILES := sources/imgui.cpp sources/imgui_draw.cpp sources/imgui_tables.cpp sources/imgui_widgets.cpp
+
 TrollSpeed_FILES += $(wildcard sources/*.mm sources/*.m)
+TrollSpeed_FILES += $(IMGUI_CPP_FILES)
 TrollSpeed_FILES += $(wildcard sources/KIF/*.mm sources/KIF/*.m)
 TrollSpeed_FILES += $(wildcard sources/*.swift)
 TrollSpeed_FILES += $(wildcard sources/SPLarkController/*.swift)
@@ -22,18 +26,20 @@ TrollSpeed_CFLAGS += -Ilibraries/headers
 TrollSpeed_CFLAGS += -Isources
 TrollSpeed_CFLAGS += -IImGui
 TrollSpeed_CFLAGS += -Isources/KIF
-# pch 只给 ObjC/ObjC++，不要传给纯 C++ 源文件
+
+# pch 只给 ObjC/ObjC++；纯 .cpp 不能带 pch
 TrollSpeed_OBJCFLAGS += -include supports/hudapp-prefix.pch
 TrollSpeed_OBJCCFLAGS += -include supports/hudapp-prefix.pch
-# ImGui 核心 .cpp 在 imgui/ 子工程编译（可安全使用全局 CCFLAGS，且无 Swift）
-# 主工程 .mm 用 per-file CFLAGS（Theos 不支持 per-file CCFLAGS）
+
+# Theos 编译标志约束（见 rules.mk）：
+#   - .cpp 读 ALL_CFLAGS + ALL_CCFLAGS；per-file 只有 *_CFLAGS 生效（$($(<)_CFLAGS)），*_CCFLAGS 无效
+#   - 全局 TrollSpeed_CCFLAGS 会传给 swiftc -Xcc，导致 PCH 失败
+#   - TrollSpeed_SUBPROJECTS + library.mk 会生成 *.subproject.a 依赖，与静态库产物不匹配
+# 因此：ImGui .cpp 与需要 C++11 的 .mm 均用 per-file CFLAGS，禁止全局 CCFLAGS / ImGui 子工程
+$(foreach f,$(IMGUI_CPP_FILES),$(eval $(f)_CFLAGS += -std=c++11 -fno-rtti))
 sources/HUDRootViewController.mm_CFLAGS += -std=c++11 -fno-rtti
 sources/imgui_impl_metal.mm_CFLAGS += -std=c++11 -fno-rtti
 MainApplication.mm_CFLAGS += -std=c++14
-
-# 子工程须在主应用链接前编译；LIBRARIES 只在 Theos 库目录搜索，不能用于本地 subproject
-TrollSpeed_SUBPROJECTS += libimgui
-TrollSpeed_LDFLAGS += $(foreach arch,$(ARCHS),$(abspath libimgui/.theos/obj)/$(arch)/imgui.a)
 
 TrollSpeed_SWIFT_BRIDGING_HEADER += supports/hudapp-bridging-header.h
 
@@ -45,7 +51,6 @@ TrollSpeed_CODESIGN_FLAGS += -Ssupports/entitlements.plist
 
 include $(THEOS_MAKE_PATH)/application.mk
 
-SUBPROJECTS += libimgui
 SUBPROJECTS += prefs
 ifneq ($(FINALPACKAGE),1)
 SUBPROJECTS += memory_pressure

@@ -57,26 +57,33 @@ jobs:
           echo "PKG_VERSION=$(./get-version.sh)" >> $GITHUB_ENV
           echo "Available SDKs: $(find $GITHUB_WORKSPACE/theos/sdks -maxdepth 1 -name '*.sdk' -print)"
 
-      - name: Verify compile flags before build
+      - name: Verify Theos build graph
         run: |
           set -euo pipefail
-          # ImGui 子工程必须带 C++11
-          (cd libimgui && THEOS="$GITHUB_WORKSPACE/theos" gmake -n 2>&1 | tee /tmp/imgui-dryrun.log)
-          grep -q -- '-std=c++11' /tmp/imgui-dryrun.log
-          grep -q -- 'sources/imgui.cpp' /tmp/imgui-dryrun.log
-          # 主工程 Swift 不能被注入 -std=c++11
-          THEOS="$GITHUB_WORKSPACE/theos" FINALPACKAGE=1 gmake -n 2>&1 | tee /tmp/app-dryrun.log
-          if grep -E 'swiftc.*-Xcc -std=c\+\+11' /tmp/app-dryrun.log; then
+          THEOS="$GITHUB_WORKSPACE/theos" FINALPACKAGE=1 gmake -n 2>&1 | tee /tmp/dryrun.log
+          # ImGui .cpp 必须在主工程内以 C++11 编译
+          grep -q -- 'sources/imgui.cpp' /tmp/dryrun.log
+          grep -q -- '-std=c++11' /tmp/dryrun.log
+          # 不得使用错误的 subproject 链接产物
+          if grep -q 'subproject\.a' /tmp/dryrun.log; then
+            echo 'must not link *.subproject.a'
+            exit 1
+          fi
+          # Swift 不能被注入 -std=c++11
+          if grep -E 'swiftc.*-Xcc -std=c\+\+11' /tmp/dryrun.log; then
             echo 'swiftc must not receive -std=c++11 via -Xcc'
             exit 1
           fi
-          # 主工程链接命令必须包含 libimgui 静态库
-          grep -q -- 'libimgui/.theos/obj/arm64/imgui.a' /tmp/app-dryrun.log
 
       - name: Build tipa with Theos
         run: |
           ./gen-control.sh
           THEOS="$GITHUB_WORKSPACE/theos" FINALPACKAGE=1 gmake clean package
+
+      - name: Verify tipa artifact
+        run: |
+          set -euo pipefail
+          test -n "$(ls packages/TrollSpeed_*.tipa)"
 
       - name: Upload tipa artifact
         uses: actions/upload-artifact@v4
