@@ -24,13 +24,13 @@ TrollSpeed_CFLAGS += -Ilibraries/headers
 TrollSpeed_CFLAGS += -Isources
 TrollSpeed_CFLAGS += -IImGui
 TrollSpeed_CFLAGS += -Isources/KIF
-TrollSpeed_CFLAGS += -include supports/hudapp-prefix.pch
+# pch 只给 ObjC/ObjC++，不要传给 .cpp（ImGui 需要 C++11）
+TrollSpeed_OBJCFLAGS += -include supports/hudapp-prefix.pch
+TrollSpeed_OBJCCFLAGS += -include supports/hudapp-prefix.pch
+# Theos 编译 .cpp 使用 CXXFLAGS，不是 CCFLAGS
+TrollSpeed_CXXFLAGS += -std=c++11 -fno-rtti
 MainApplication.mm_CCFLAGS += -std=c++14
 HUDRootViewController.mm_CCFLAGS += -std=c++11 -fno-rtti
-imgui.cpp_CCFLAGS += -std=c++11 -fno-rtti
-imgui_draw.cpp_CCFLAGS += -std=c++11 -fno-rtti
-imgui_tables.cpp_CCFLAGS += -std=c++11 -fno-rtti
-imgui_widgets.cpp_CCFLAGS += -std=c++11 -fno-rtti
 imgui_impl_metal.mm_CCFLAGS += -std=c++11 -fno-rtti
 
 TrollSpeed_SWIFT_BRIDGING_HEADER += supports/hudapp-bridging-header.h
