@@ -27,8 +27,7 @@ TrollSpeed_CFLAGS += -Isources/KIF
 # pch 只给 ObjC/ObjC++，不要传给 .cpp（ImGui 需要 C++11）
 TrollSpeed_OBJCFLAGS += -include supports/hudapp-prefix.pch
 TrollSpeed_OBJCCFLAGS += -include supports/hudapp-prefix.pch
-# Theos 里 C++ 标志变量名是 CCFLAGS（不是 CXXFLAGS），.cpp/.mm 编译都会读 ALL_CCFLAGS
-TrollSpeed_CCFLAGS += -std=c++11 -fno-rtti
+# C++ 标准只设 per-file，不要写全局 CCFLAGS（Theos 会把 CCFLAGS 传给 swiftc -Xcc，导致 generate-pch 失败）
 imgui.cpp_CCFLAGS += -std=c++11 -fno-rtti
 imgui_draw.cpp_CCFLAGS += -std=c++11 -fno-rtti
 imgui_tables.cpp_CCFLAGS += -std=c++11 -fno-rtti
