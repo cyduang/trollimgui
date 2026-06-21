@@ -670,14 +670,18 @@ static bool 是否显示物资缓冲 = false;
 
 - (ImVec2) 获取骨骼屏幕ImVec2:(long)LComponentToWorld LStaticMesh:(long)LStaticMesh 骨骼点:(int)骨骼点 {
     Transform TTransform = {
-        读取<float>(LComponentToWorld),
-        读取<float>(LComponentToWorld + 0x4),
-        读取<float>(LComponentToWorld + 0x8),
-        读取<float>(LComponentToWorld + 0xC),
+        {
+            读取<float>(LComponentToWorld),
+            读取<float>(LComponentToWorld + 0x4),
+            读取<float>(LComponentToWorld + 0x8),
+            读取<float>(LComponentToWorld + 0xC),
+        },
         [self 获取Translation:LComponentToWorld],
-        读取<float>(LComponentToWorld + Scale3D),
-        读取<float>(LComponentToWorld + Scale3D + 0x4),
-        读取<float>(LComponentToWorld + Scale3D + 0x8),
+        {
+            读取<float>(LComponentToWorld + Scale3D),
+            读取<float>(LComponentToWorld + Scale3D + 0x4),
+            读取<float>(LComponentToWorld + Scale3D + 0x8),
+        },
     };
     
     Transform矩阵 TTransform矩阵 = [self 获取Transform矩阵:TTransform];
