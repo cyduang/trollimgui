@@ -27,8 +27,12 @@ TrollSpeed_CFLAGS += -Isources/KIF
 # pch 只给 ObjC/ObjC++，不要传给 .cpp（ImGui 需要 C++11）
 TrollSpeed_OBJCFLAGS += -include supports/hudapp-prefix.pch
 TrollSpeed_OBJCCFLAGS += -include supports/hudapp-prefix.pch
-# Theos 编译 .cpp 使用 CXXFLAGS，不是 CCFLAGS
-TrollSpeed_CXXFLAGS += -std=c++11 -fno-rtti
+# Theos 里 C++ 标志变量名是 CCFLAGS（不是 CXXFLAGS），.cpp/.mm 编译都会读 ALL_CCFLAGS
+TrollSpeed_CCFLAGS += -std=c++11 -fno-rtti
+imgui.cpp_CCFLAGS += -std=c++11 -fno-rtti
+imgui_draw.cpp_CCFLAGS += -std=c++11 -fno-rtti
+imgui_tables.cpp_CCFLAGS += -std=c++11 -fno-rtti
+imgui_widgets.cpp_CCFLAGS += -std=c++11 -fno-rtti
 MainApplication.mm_CCFLAGS += -std=c++14
 HUDRootViewController.mm_CCFLAGS += -std=c++11 -fno-rtti
 imgui_impl_metal.mm_CCFLAGS += -std=c++11 -fno-rtti
