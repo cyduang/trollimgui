@@ -1,19 +1,17 @@
 //
 //  HUDMainWindow.mm
-//  TrollSpeed
-//
-//  Created by Lessica on 2024/1/24.
+//  Demo 阶段关闭 secure context，避免 MTKView 拿不到 drawable
 //
 
 #import "HUDMainWindow.h"
-#import "HUDRootViewController.h"
 
 @implementation HUDMainWindow
 
 + (BOOL)_isSystemWindow { return YES; }
 - (BOOL)_isWindowServerHostingManaged { return NO; }
-- (BOOL)_ignoresHitTest { return YES; }
-- (BOOL)_isSecure { return YES; }
-- (BOOL)_shouldCreateContextAsSecure { return YES; }
+// Demo 需要可见+可点；正式版再按需打开穿透
+- (BOOL)_ignoresHitTest { return NO; }
+- (BOOL)_isSecure { return NO; }
+- (BOOL)_shouldCreateContextAsSecure { return NO; }
 
 @end
