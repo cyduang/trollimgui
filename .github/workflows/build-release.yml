@@ -61,7 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           # ImGui 子工程必须带 C++11
-          (cd imgui && THEOS="$GITHUB_WORKSPACE/theos" gmake -n 2>&1 | tee /tmp/imgui-dryrun.log)
+          (cd libimgui && THEOS="$GITHUB_WORKSPACE/theos" gmake -n 2>&1 | tee /tmp/imgui-dryrun.log)
           grep -q -- '-std=c++11' /tmp/imgui-dryrun.log
           grep -q -- 'sources/imgui.cpp' /tmp/imgui-dryrun.log
           # 主工程 Swift 不能被注入 -std=c++11
