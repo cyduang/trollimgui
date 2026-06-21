@@ -79,8 +79,6 @@ static BOOL s_imguiInitialized = NO;
         _bitmapView.backgroundColor = UIColor.clearColor;
         [self addSubview:_bitmapView];
 
-        [self setupImGuiIfNeeded];
-
         _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(onDisplayLink:)];
         _displayLink.preferredFramesPerSecond = 60;
         [_displayLink addToRunLoop:NSRunLoop.mainRunLoop forMode:NSRunLoopCommonModes];
@@ -302,6 +300,8 @@ static BOOL s_imguiInitialized = NO;
     if (self.bounds.size.width < 1 || self.bounds.size.height < 1) {
         return;
     }
+
+    [self setupImGuiIfNeeded];
 
     [self ensureBitmapContext];
     if (!_bitmapContext) {

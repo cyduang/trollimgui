@@ -8,6 +8,7 @@
 #import "HUDMainApplicationDelegate.h"
 #import "HUDMainWindow.h"
 #import "HUDRootViewController.h"
+#import "ImGuiHUDView.h"
 
 #import "SBSAccessibilityWindowHostingController.h"
 #import "UIWindow+Private.h"
@@ -43,6 +44,16 @@
 #pragma clang diagnostic pop
 }
 
+- (void)finishHUDWindowSetup
+{
+    [self registerWindowWithSpringBoard:self.window];
+
+    ImGuiHUDView *imguiView = _rootViewController.imguiView;
+    if (imguiView) {
+        [imguiView resumeRendering];
+    }
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions
 {
     (void)application;
@@ -50,8 +61,6 @@
 
     _rootViewController = [[HUDRootViewController alloc] init];
 
-    // ImGui 必须留在 SBS 托管的 UIWindow 内，才能持久显示在桌面。
-    // FrontBoard Scene 的 presentationView 在部分系统版本上不可见，且会导致 displayLink 暂停。
     self.window = [[HUDMainWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     self.window.opaque = NO;
     self.window.backgroundColor = UIColor.clearColor;
@@ -60,7 +69,10 @@
     [self.window setHidden:NO];
     [self.window makeKeyAndVisible];
 
-    [self registerWindowWithSpringBoard:self.window];
+    // 等 window 完成 layout 后再注册到 SpringBoard，否则 SBS 可能托管空窗口。
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self finishHUDWindowSetup];
+    });
 
     return YES;
 }

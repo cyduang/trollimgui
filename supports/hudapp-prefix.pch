@@ -17,8 +17,10 @@
 
 #if !TARGET_OS_SIMULATOR
     #define USER_DEFAULTS_PATH @"/var/mobile/Library/Preferences/ch.xxtou.hudapp.plist"
+    #define HUD_READY_PATH @"/var/mobile/Library/Caches/ch.xxtou.hudapp.ready"
 #else
     #define USER_DEFAULTS_PATH ([[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"ch.xxtou.hudapp.plist"])
+    #define HUD_READY_PATH ([[[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask].firstObject path] stringByAppendingPathComponent:@"ch.xxtou.hudapp.ready"])
 #endif
 #endif
 

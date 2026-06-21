@@ -69,6 +69,12 @@ void SetHUDEnabled(BOOL isEnabled)
 {
     notify_post(NOTIFY_DISMISSAL_HUD);
 
+    if (isEnabled) {
+        // 等待旧 HUD 进程退出，避免两个 HUD 互相干扰。
+        [NSThread sleepForTimeInterval:FADE_OUT_DURATION];
+        [[NSFileManager defaultManager] removeItemAtPath:TS_JBROOT_PATH(HUD_READY_PATH) error:nil];
+    }
+
     posix_spawnattr_t attr;
     posix_spawnattr_init(&attr);
 

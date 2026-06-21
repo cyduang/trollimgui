@@ -37,6 +37,7 @@
                     [[self.windows firstObject] setAlpha:0.0];
 #pragma clang diagnostic pop
                 } completion:^(BOOL finished) {
+                    [[NSFileManager defaultManager] removeItemAtPath:TS_JBROOT_PATH(HUD_READY_PATH) error:nil];
                     // Terminate the HUD app
                     [self terminateWithSuccess];
                 }];

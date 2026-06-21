@@ -96,6 +96,7 @@ static void SpringBoardLockStatusChanged
     ImGuiHUDView *_imguiView;
     FBSOrientationObserver *_orientationObserver;
     UIInterfaceOrientation _orientation;
+    NSMutableArray<NSLayoutConstraint *> *_constraints;
 }
 
 - (void)registerNotifications
@@ -144,33 +145,14 @@ static void SpringBoardLockStatusChanged
 
 - (ImGuiHUDView *)imguiView
 {
-    return (ImGuiHUDView *)self.view;
-}
-
-- (void)loadView
-{
-    CGRect bounds = [UIScreen mainScreen].bounds;
-    _imguiView = [[ImGuiHUDView alloc] initWithFrame:bounds];
-    _imguiView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.view = _imguiView;
-}
-
-+ (BOOL)passthroughMode
-{
-    return [[[NSDictionary dictionaryWithContentsOfFile:TS_JBROOT_PATH(USER_DEFAULTS_PATH)] objectForKey:HUDUserDefaultsKeyPassthroughMode] boolValue];
-}
-
-- (BOOL)usesRotation
-{
-    [self loadUserDefaults:NO];
-    NSNumber *mode = [_userDefaults objectForKey:HUDUserDefaultsKeyUsesRotation];
-    return mode != nil ? [mode boolValue] : NO;
+    return _imguiView;
 }
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
+        _constraints = [NSMutableArray array];
         [self registerNotifications];
         _orientationObserver = [[objc_getClass("FBSOrientationObserver") alloc] init];
         __weak HUDRootViewController *weakSelf = self;
@@ -193,10 +175,14 @@ static void SpringBoardLockStatusChanged
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = UIColor.clearColor;
     self.view.opaque = NO;
 
-    // 三指双击显示菜单，双指双击隐藏菜单
+    _imguiView = [[ImGuiHUDView alloc] initWithFrame:self.view.bounds];
+    _imguiView.translatesAutoresizingMaskIntoConstraints = NO;
+    _imguiView.backgroundColor = UIColor.clearColor;
+    [self.view addSubview:_imguiView];
+
     UITapGestureRecognizer *showMenuGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImGuiMenu:)];
     showMenuGesture.numberOfTapsRequired = 2;
     showMenuGesture.numberOfTouchesRequired = 3;
@@ -208,6 +194,18 @@ static void SpringBoardLockStatusChanged
     [self.view addGestureRecognizer:hideMenuGesture];
 
     [self reloadUserDefaults];
+}
+
++ (BOOL)passthroughMode
+{
+    return [[[NSDictionary dictionaryWithContentsOfFile:TS_JBROOT_PATH(USER_DEFAULTS_PATH)] objectForKey:HUDUserDefaultsKeyPassthroughMode] boolValue];
+}
+
+- (BOOL)usesRotation
+{
+    [self loadUserDefaults:NO];
+    NSNumber *mode = [_userDefaults objectForKey:HUDUserDefaultsKeyUsesRotation];
+    return mode != nil ? [mode boolValue] : NO;
 }
 
 - (void)showImGuiMenu:(UITapGestureRecognizer *)sender
@@ -232,6 +230,7 @@ static void SpringBoardLockStatusChanged
         [_imguiView layoutIfNeeded];
     }
 
+    [@"" writeToFile:TS_JBROOT_PATH(HUD_READY_PATH) atomically:YES encoding:NSUTF8StringEncoding error:nil];
     notify_post(NOTIFY_LAUNCHED_HUD);
 }
 
@@ -246,10 +245,24 @@ static void SpringBoardLockStatusChanged
 - (void)viewSafeAreaInsetsDidChange
 {
     [super viewSafeAreaInsetsDidChange];
+    [self updateViewConstraints];
 }
 
 - (void)updateViewConstraints
 {
+    [NSLayoutConstraint deactivateConstraints:_constraints];
+    [_constraints removeAllObjects];
+
+    if (_imguiView) {
+        [_constraints addObjectsFromArray:@[
+            [_imguiView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+            [_imguiView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+            [_imguiView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+            [_imguiView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        ]];
+    }
+
+    [NSLayoutConstraint activateConstraints:_constraints];
     [super updateViewConstraints];
 }
 

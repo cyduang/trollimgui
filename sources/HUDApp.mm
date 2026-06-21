@@ -118,6 +118,8 @@ int main(int argc, char *argv[])
 
         if (strcmp(argv[1], "-hud") == 0)
         {
+            [[NSFileManager defaultManager] removeItemAtPath:TS_JBROOT_PATH(HUD_READY_PATH) error:nil];
+
             pid_t pid = getpid();
             pid_t pgid = getgid();
             (void)pgid;
@@ -180,6 +182,8 @@ int main(int argc, char *argv[])
                 unlink([pidPath UTF8String]);
             }
 
+            [[NSFileManager defaultManager] removeItemAtPath:TS_JBROOT_PATH(HUD_READY_PATH) error:nil];
+
             return EXIT_SUCCESS;
         }
         else if (strcmp(argv[1], "-check") == 0)
@@ -192,7 +196,15 @@ int main(int argc, char *argv[])
             {
                 pid_t pid = (pid_t)[pidString intValue];
                 int killed = kill(pid, 0);
-                return (killed == 0 ? EXIT_FAILURE : EXIT_SUCCESS);
+                if (killed != 0) {
+                    return EXIT_SUCCESS;
+                }
+
+                if (![[NSFileManager defaultManager] fileExistsAtPath:TS_JBROOT_PATH(HUD_READY_PATH)]) {
+                    return EXIT_SUCCESS;
+                }
+
+                return EXIT_FAILURE;
             }
             else return EXIT_SUCCESS;  // No PID file, so HUD is not running
         }
