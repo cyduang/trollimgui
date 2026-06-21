@@ -11,30 +11,27 @@ APPLICATION_NAME := TrollSpeed
 
 TrollSpeed_USE_MODULES := 0
 
-TrollSpeed_FILES += $(wildcard sources/*.mm sources/*.m sources/*.cpp)
+TrollSpeed_FILES += $(wildcard sources/*.mm sources/*.m)
 TrollSpeed_FILES += $(wildcard sources/KIF/*.mm sources/KIF/*.m)
 TrollSpeed_FILES += $(wildcard sources/*.swift)
 TrollSpeed_FILES += $(wildcard sources/SPLarkController/*.swift)
 TrollSpeed_FILES += $(wildcard sources/SnapshotSafeView/*.swift)
-# 减小包体积，Demo 窗口不参与 HUD 构建
-TrollSpeed_FILES := $(filter-out sources/imgui_demo.cpp,$(TrollSpeed_FILES))
 
 TrollSpeed_CFLAGS += -fobjc-arc
 TrollSpeed_CFLAGS += -Ilibraries/headers
 TrollSpeed_CFLAGS += -Isources
 TrollSpeed_CFLAGS += -IImGui
 TrollSpeed_CFLAGS += -Isources/KIF
-# pch 只给 ObjC/ObjC++，不要传给 .cpp（ImGui 需要 C++11）
+# pch 只给 ObjC/ObjC++，不要传给纯 C++ 源文件
 TrollSpeed_OBJCFLAGS += -include supports/hudapp-prefix.pch
 TrollSpeed_OBJCCFLAGS += -include supports/hudapp-prefix.pch
-# C++ 标准只设 per-file，不要写全局 CCFLAGS（Theos 会把 CCFLAGS 传给 swiftc -Xcc，导致 generate-pch 失败）
-imgui.cpp_CCFLAGS += -std=c++11 -fno-rtti
-imgui_draw.cpp_CCFLAGS += -std=c++11 -fno-rtti
-imgui_tables.cpp_CCFLAGS += -std=c++11 -fno-rtti
-imgui_widgets.cpp_CCFLAGS += -std=c++11 -fno-rtti
-MainApplication.mm_CCFLAGS += -std=c++14
-HUDRootViewController.mm_CCFLAGS += -std=c++11 -fno-rtti
-imgui_impl_metal.mm_CCFLAGS += -std=c++11 -fno-rtti
+# ImGui 核心 .cpp 在 imgui/ 子工程编译（可安全使用全局 CCFLAGS，且无 Swift）
+# 主工程 .mm 用 per-file CFLAGS（Theos 不支持 per-file CCFLAGS）
+sources/HUDRootViewController.mm_CFLAGS += -std=c++11 -fno-rtti
+sources/imgui_impl_metal.mm_CFLAGS += -std=c++11 -fno-rtti
+MainApplication.mm_CFLAGS += -std=c++14
+
+TrollSpeed_LIBRARIES += imgui
 
 TrollSpeed_SWIFT_BRIDGING_HEADER += supports/hudapp-bridging-header.h
 
@@ -46,6 +43,7 @@ TrollSpeed_CODESIGN_FLAGS += -Ssupports/entitlements.plist
 
 include $(THEOS_MAKE_PATH)/application.mk
 
+SUBPROJECTS += imgui
 SUBPROJECTS += prefs
 ifneq ($(FINALPACKAGE),1)
 SUBPROJECTS += memory_pressure

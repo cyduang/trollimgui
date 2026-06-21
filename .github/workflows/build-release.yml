@@ -57,6 +57,20 @@ jobs:
           echo "PKG_VERSION=$(./get-version.sh)" >> $GITHUB_ENV
           echo "Available SDKs: $(find $GITHUB_WORKSPACE/theos/sdks -maxdepth 1 -name '*.sdk' -print)"
 
+      - name: Verify compile flags before build
+        run: |
+          set -euo pipefail
+          # ImGui 子工程必须带 C++11
+          (cd imgui && THEOS="$GITHUB_WORKSPACE/theos" gmake -n 2>&1 | tee /tmp/imgui-dryrun.log)
+          grep -q -- '-std=c++11' /tmp/imgui-dryrun.log
+          grep -q -- 'sources/imgui.cpp' /tmp/imgui-dryrun.log
+          # 主工程 Swift 不能被注入 -std=c++11
+          THEOS="$GITHUB_WORKSPACE/theos" FINALPACKAGE=1 gmake -n 2>&1 | tee /tmp/app-dryrun.log
+          if grep -E 'swiftc.*-Xcc -std=c\+\+11' /tmp/app-dryrun.log; then
+            echo 'swiftc must not receive -std=c++11 via -Xcc'
+            exit 1
+          fi
+
       - name: Build tipa with Theos
         run: |
           ./gen-control.sh
