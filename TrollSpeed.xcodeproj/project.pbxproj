@@ -115,8 +115,6 @@
 		AA11B0422B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */; };
 		AA11B0212B5BF5C6007235A6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A0092B5BF5C6007235A6 /* Metal.framework */; };
 		AA11B0232B5BF5C6007235A6 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */; };
-		AA11B0452B5BF5C6007235A6 /* FrontBoard.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11B0462B5BF5C6007235A6 /* FrontBoard.tbd */; };
-		AA11B0472B5BF5C6007235A6 /* FrontBoard.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11B0462B5BF5C6007235A6 /* FrontBoard.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -231,7 +229,7 @@
 		AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = imgui_impl_ios_cg.mm; sourceTree = "<group>"; };
 		AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDOverlayScene.mm; sourceTree = "<group>"; };
 		AA11B0432B5BF5C6007235A6 /* HUDOverlayScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HUDOverlayScene.h; sourceTree = "<group>"; };
-		AA11B0462B5BF5C6007235A6 /* FrontBoard.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; path = FrontBoard.tbd; sourceTree = "<group>"; };
+		AA11B0442B5BF5C6007235A6 /* UIKitFrontBoard+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIKitFrontBoard+HUD.h"; sourceTree = "<group>"; };
 		AA11A0092B5BF5C6007235A6 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -249,7 +247,6 @@
 				CC654E3B2DABD9C200D54F83 /* SpringBoardServices.Sim.tbd in Frameworks */,
 				AA11B00F2B5BF5C6007235A6 /* Metal.framework in Frameworks */,
 				AA11B0112B5BF5C6007235A6 /* MetalKit.framework in Frameworks */,
-				AA11B0452B5BF5C6007235A6 /* FrontBoard.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,7 +262,6 @@
 				CC711D982B5BFF2F007235A6 /* GraphicsServices.tbd in Frameworks */,
 				AA11B0212B5BF5C6007235A6 /* Metal.framework in Frameworks */,
 				AA11B0232B5BF5C6007235A6 /* MetalKit.framework in Frameworks */,
-				AA11B0472B5BF5C6007235A6 /* FrontBoard.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,7 +435,6 @@
 				CC654E052DABD94A00D54F83 /* IOKit.Sim.tbd */,
 				CC711D962B5BFF2F007235A6 /* SpringBoardServices.tbd */,
 				CC654E0B2DABD95E00D54F83 /* SpringBoardServices.Sim.tbd */,
-				AA11B0462B5BF5C6007235A6 /* FrontBoard.tbd */,
 			);
 			path = libraries;
 			sourceTree = "<group>";
@@ -720,6 +715,10 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -732,6 +731,8 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-framework",
+					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -773,6 +774,10 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -785,6 +790,8 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-framework",
+					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -961,6 +968,10 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -973,6 +984,8 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-framework",
+					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1018,6 +1031,10 @@
 					"$(PROJECT_DIR)/IMGUI",
 					"$(PROJECT_DIR)/headers",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/System/Library/PrivateFrameworks",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -1030,6 +1047,8 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-framework",
+					FrontBoard,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
