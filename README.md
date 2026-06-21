@@ -1,65 +1,42 @@
-# TrollSpeed
+# TrollSpeed (TrollStore 版)
 
-[![Build Release](https://github.com/Lessica/TrollSpeed/actions/workflows/build-release.yml/badge.svg)](https://github.com/Lessica/TrollSpeed/actions/workflows/build-release.yml)
-![Latest Release](https://img.shields.io/github/v/release/Lessica/TrollSpeed)
-![MIT License](https://img.shields.io/github/license/Lessica/TrollSpeed)
+基于 [Lessica/TrollSpeed](https://github.com/Lessica/TrollSpeed) 最新上游代码重构的 **纯 TrollStore** 分支，已移除 ImGui 相关实验代码，恢复原版网速/FPS HUD 功能。
 
-[now-on-havoc]: https://havoc.app/package/trollspeed 
+[![Build Release](https://github.com/cyduang/trollimgui/actions/workflows/build-release.yml/badge.svg)](https://github.com/cyduang/trollimgui/actions/workflows/build-release.yml)
 
-[<img width="150" src="https://docs.havoc.app/img/badges/get_square.svg" />][now-on-havoc]
+## 功能
 
-Shows upload &amp; download speed below the status bar.
+在状态栏下方显示 **上传/下载网速** 或 **FPS**，支持 TrollStore 持久化 HUD。
 
-Tested and expected to work on all iOS versions supported by opa334’s TrollStore.
+- 支持 iOS 14–17（TrollStore 支持的版本）
+- 纯 TrollStore 安装，无需越狱
+- 已移除 ImGui / FrontBoard 实验代码
 
-## How it works?
+## 构建
 
-[TrollStore](https://github.com/opa334/TrollStore) + [UIDaemon](https://github.com/limneos/UIDaemon) + [NetworkSpeed13](https://github.com/lwlsw/NetworkSpeed13) + (some magic)
-\=
+```bash
+FINALPACKAGE=1 make package
+```
 
-- An TrollStore app to spawn HUD process with root privilege.
-- Don’t call `waitpid` to that process. Let it go.
-- A HUD app with entitlements from `assistivetouchd` to display and persist global windows.
+产物位于 `packages/TrollSpeed_*.tipa`。
 
-## How to build?
+也可使用 Xcode：
 
-- Use [theos](https://github.com/theos/theos) to compile.
-  - `FINALPACKAGE=1 make package`
-- You'll get a `.tipa` file in `./packages` folder.
-- Don't like **theos**? Use `./build.sh` to build with Xcode.
+```bash
+./build.sh
+```
 
-## Caveats
+## 安装
 
-- Spawn with root privileges is **required**. Otherwise, the HUD process will be killed by SpringBoard when unlocking device.
-- TrollSpeed will observe its app removal and terminate its HUD.
+1. 用 **TrollStore** 安装 `.tipa`
+2. 打开 App，点击「开启悬浮窗」
+3. 退出 App 后 HUD 会保持在屏幕上
 
-## Notes
+## 与上游差异
 
-- Please give me feedback if you find any issues &amp; bugs, or have any suggestions.
-- Give me a star 🌟 if you like this project. Thanks!
-
-## Screenshots
-
-![preview](screenshots/preview.jpeg)
-
-![IMG_0011](https://github.com/user-attachments/assets/716d8c62-5032-4bec-8090-fd7fc02e11b4)
-
-## Special Thanks
-
-- [KIF](https://github.com/kif-framework/KIF)
-- [SPLarkController](https://github.com/ivanvorobei/SPLarkController) by [@ivanvorobei_](https://twitter.com/ivanvorobei_)
-- [TrollStore](https://github.com/opa334/TrollStore) by [@opa334dev](https://twitter.com/opa334dev)
-- [UIDaemon](https://github.com/limneos/UIDaemon) by [@limneos](https://twitter.com/limneos)
-- [NetworkSpeed13](https://github.com/lwlsw/NetworkSpeed13) by [@johnzarodev](https://twitter.com/johnzarodev)
-- [SnapshotSafeView](https://github.com/Stampoo/SnapshotSafeView) by [Ilya knyazkov](https://github.com/Stampoo)
+- `DISABLE_PATH_REDIRECTION=1`：不做 roothide/rootless 路径重定向
+- CI 在 push 时自动构建 release
 
 ## License
 
-TrollSpeed is licensed under the [MIT License](LICENSE).
-
-### Localization
-
-To add a language, create a new `.lproj` folder in `Resources`.
-
-- en/zh-Hans [@Lessica](https://github.com/Lessica)
-- es [@Deci8BelioS](https://github.com/Deci8BelioS)
+MIT License — 见 [LICENSE](LICENSE)

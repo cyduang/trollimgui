@@ -11,16 +11,31 @@
     #import <UIKit/UIKit.h>
 
     #import "TSPathRedirect.h"
-    #import <os/log.h>
 
+#if !TARGET_OS_SIMULATOR && !defined(DISABLE_PATH_REDIRECTION)
+    #if __has_include(<roothide.h>)
+        #import <roothide.h>
+        #ifndef JBROOT_PATH_CSTRING
+            #define JBROOT_PATH_CSTRING(cPath) jbroot(cPath)
+        #endif
+        #ifndef JBROOT_PATH_NSSTRING
+            #define JBROOT_PATH_NSSTRING(nsPath) jbroot(nsPath)
+        #endif
+    #elif __has_include(<libroot.h>)
+        #import <libroot.h>
+    #endif
+#else
+    #define JBROOT_PATH_CSTRING(cPath) TS_JBROOT_CPATH(cPath)
+    #define JBROOT_PATH_NSSTRING(nsPath) TS_JBROOT_PATH(nsPath)
+#endif
+
+    #import <os/log.h>
     #import "NSUserDefaults+Private.h"
 
 #if !TARGET_OS_SIMULATOR
     #define USER_DEFAULTS_PATH @"/var/mobile/Library/Preferences/ch.xxtou.hudapp.plist"
-    #define HUD_READY_PATH @"/var/mobile/Library/Caches/ch.xxtou.hudapp.ready"
 #else
     #define USER_DEFAULTS_PATH ([[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"ch.xxtou.hudapp.plist"])
-    #define HUD_READY_PATH ([[[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask].firstObject path] stringByAppendingPathComponent:@"ch.xxtou.hudapp.ready"])
 #endif
 #endif
 
@@ -36,16 +51,9 @@
 
 #define FADE_OUT_DURATION 0.25
 
-// HUD -> APP: Notify APP that the HUD's view is appeared.
 #define NOTIFY_LAUNCHED_HUD "ch.xxtou.notification.hud.launched"
-
-// APP -> HUD: Notify HUD to dismiss itself.
 #define NOTIFY_DISMISSAL_HUD "ch.xxtou.notification.hud.dismissal"
-
-// APP -> HUD: Notify HUD that the user defaults has been changed by APP.
 #define NOTIFY_RELOAD_HUD "ch.xxtou.notification.hud.reload"
-
-// HUD -> APP: Notify APP that the user defaults has been changed by HUD.
 #define NOTIFY_RELOAD_APP "ch.xxtou.notification.app.reload"
 
 #ifdef __OBJC__

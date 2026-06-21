@@ -95,26 +95,6 @@
 		CC91309E2B616541006E3280 /* HUDBackdropLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC91309D2B616541006E3280 /* HUDBackdropLabel.mm */; };
 		CC9130A32B616C18006E3280 /* HUDBackdropView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC9130A22B616C18006E3280 /* HUDBackdropView.mm */; };
 		CC9130A72B62A33A006E3280 /* TSSettingsIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9130A62B62A33A006E3280 /* TSSettingsIndex.swift */; };
-		AA11B0012B5BF5C6007235A6 /* ImGuiHUDView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0022B5BF5C6007235A6 /* ImGuiHUDView.mm */; };
-		AA11B0032B5BF5C6007235A6 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0032B5BF5C6007235A6 /* imgui.cpp */; };
-		AA11B0052B5BF5C6007235A6 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0042B5BF5C6007235A6 /* imgui_draw.cpp */; };
-		AA11B0072B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */; };
-		AA11B0092B5BF5C6007235A6 /* imgui_tables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */; };
-		AA11B00B2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */; };
-		AA11B00D2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */; };
-		AA11B0402B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */; };
-		AA11B00F2B5BF5C6007235A6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A0092B5BF5C6007235A6 /* Metal.framework */; };
-		AA11B0112B5BF5C6007235A6 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */; };
-		AA11B0132B5BF5C6007235A6 /* ImGuiHUDView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0022B5BF5C6007235A6 /* ImGuiHUDView.mm */; };
-		AA11B0152B5BF5C6007235A6 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0032B5BF5C6007235A6 /* imgui.cpp */; };
-		AA11B0172B5BF5C6007235A6 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0042B5BF5C6007235A6 /* imgui_draw.cpp */; };
-		AA11B0192B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */; };
-		AA11B01B2B5BF5C6007235A6 /* imgui_tables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */; };
-		AA11B01D2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */; };
-		AA11B01F2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */; };
-		AA11B0422B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */; };
-		AA11B0212B5BF5C6007235A6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A0092B5BF5C6007235A6 /* Metal.framework */; };
-		AA11B0232B5BF5C6007235A6 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -219,19 +199,6 @@
 		CC9130A52B62A262006E3280 /* hudapp-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "hudapp-bridging-header.h"; sourceTree = "<group>"; };
 		CC9130A62B62A33A006E3280 /* TSSettingsIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSSettingsIndex.swift; sourceTree = "<group>"; };
 		CCB6B6FA2B5C06DD00AD2A89 /* NSUserDefaults+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Private.h"; sourceTree = "<group>"; };
-		AA11A0012B5BF5C6007235A6 /* ImGuiHUDView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImGuiHUDView.h; sourceTree = "<group>"; };
-		AA11A0022B5BF5C6007235A6 /* ImGuiHUDView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ImGuiHUDView.mm; sourceTree = "<group>"; };
-		AA11A0032B5BF5C6007235A6 /* imgui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui.cpp; sourceTree = "<group>"; };
-		AA11A0042B5BF5C6007235A6 /* imgui_draw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_draw.cpp; sourceTree = "<group>"; };
-		AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_widgets.cpp; sourceTree = "<group>"; };
-		AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_tables.cpp; sourceTree = "<group>"; };
-		AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = imgui_demo.cpp; sourceTree = "<group>"; };
-		AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = imgui_impl_ios_cg.mm; sourceTree = "<group>"; };
-		AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDOverlayScene.mm; sourceTree = "<group>"; };
-		AA11B0432B5BF5C6007235A6 /* HUDOverlayScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HUDOverlayScene.h; sourceTree = "<group>"; };
-		AA11B0442B5BF5C6007235A6 /* UIKitFrontBoard+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIKitFrontBoard+HUD.h"; sourceTree = "<group>"; };
-		AA11A0092B5BF5C6007235A6 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
-		AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,8 +212,6 @@
 				CC654E392DABD9C200D54F83 /* AssertionServices.Sim.tbd in Frameworks */,
 				CC654E3A2DABD9C200D54F83 /* GraphicsServices.Sim.tbd in Frameworks */,
 				CC654E3B2DABD9C200D54F83 /* SpringBoardServices.Sim.tbd in Frameworks */,
-				AA11B00F2B5BF5C6007235A6 /* Metal.framework in Frameworks */,
-				AA11B0112B5BF5C6007235A6 /* MetalKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,8 +225,6 @@
 				CC711D9C2B5C0032007235A6 /* IOKit.tbd in Frameworks */,
 				CC711D9A2B5BFF2F007235A6 /* BackBoardServices.tbd in Frameworks */,
 				CC711D982B5BFF2F007235A6 /* GraphicsServices.tbd in Frameworks */,
-				AA11B0212B5BF5C6007235A6 /* Metal.framework in Frameworks */,
-				AA11B0232B5BF5C6007235A6 /* MetalKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +239,6 @@
 				CC711D942B5BFE9F007235A6 /* libraries */,
 				CC711D032B5BF550007235A6 /* supports */,
 				CC711D1D2B5BF5C6007235A6 /* sources */,
-				AA11A00B2B5BF5C6007235A6 /* IMGUI */,
 				CC8DDA972B66318E001C7C9E /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -342,10 +304,6 @@
 				CC711D472B5BF5C6007235A6 /* TSEventFetcher.mm */,
 				CC9130A62B62A33A006E3280 /* TSSettingsIndex.swift */,
 				CC711D462B5BF5C6007235A6 /* TSSettingsController.swift */,
-				AA11A0012B5BF5C6007235A6 /* ImGuiHUDView.h */,
-				AA11A0022B5BF5C6007235A6 /* ImGuiHUDView.mm */,
-				AA11B0432B5BF5C6007235A6 /* HUDOverlayScene.h */,
-				AA11B0412B5BF5C6007235A6 /* HUDOverlayScene.mm */,
 			);
 			path = sources;
 			sourceTree = "<group>";
@@ -416,7 +374,6 @@
 				CC711D732B5BF6B7007235A6 /* UIEventFetcher.h */,
 				CC711D672B5BF6B7007235A6 /* UITouch+Private.h */,
 				CC711D7B2B5BF6B7007235A6 /* UIWindow+Private.h */,
-				AA11B0442B5BF5C6007235A6 /* UIKitFrontBoard+HUD.h */,
 				CC9130A02B616BBF006E3280 /* CAFilter.h */,
 			);
 			path = headers;
@@ -453,23 +410,8 @@
 			isa = PBXGroup;
 			children = (
 				CC8DDA982B66318E001C7C9E /* AppIntents.framework */,
-				AA11A0092B5BF5C6007235A6 /* Metal.framework */,
-				AA11A00A2B5BF5C6007235A6 /* MetalKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		AA11A00B2B5BF5C6007235A6 /* IMGUI */ = {
-			isa = PBXGroup;
-			children = (
-				AA11A0032B5BF5C6007235A6 /* imgui.cpp */,
-				AA11A0042B5BF5C6007235A6 /* imgui_draw.cpp */,
-				AA11A0052B5BF5C6007235A6 /* imgui_widgets.cpp */,
-				AA11A0062B5BF5C6007235A6 /* imgui_tables.cpp */,
-				AA11A0072B5BF5C6007235A6 /* imgui_demo.cpp */,
-				AA11A0082B5BF5C6007235A6 /* imgui_impl_ios_cg.mm */,
-			);
-			path = IMGUI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -609,14 +551,6 @@
 				CC654E2D2DABD9C200D54F83 /* SPLarkTransitioningDelegate.swift in Sources */,
 				CC654E2E2DABD9C200D54F83 /* SPLarkSettingsCollectionViewCell.swift in Sources */,
 				CC654E2F2DABD9C200D54F83 /* HUDMainWindow.mm in Sources */,
-				AA11B0012B5BF5C6007235A6 /* ImGuiHUDView.mm in Sources */,
-				AA11B0032B5BF5C6007235A6 /* imgui.cpp in Sources */,
-				AA11B0052B5BF5C6007235A6 /* imgui_draw.cpp in Sources */,
-				AA11B0072B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */,
-				AA11B0092B5BF5C6007235A6 /* imgui_tables.cpp in Sources */,
-				AA11B00B2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */,
-				AA11B00D2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */,
-				AA11B0402B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -657,14 +591,6 @@
 				CC711D5A2B5BF5C6007235A6 /* SPLarkTransitioningDelegate.swift in Sources */,
 				CC711D542B5BF5C6007235A6 /* SPLarkSettingsCollectionViewCell.swift in Sources */,
 				CC711D4C2B5BF5C6007235A6 /* HUDMainWindow.mm in Sources */,
-				AA11B0132B5BF5C6007235A6 /* ImGuiHUDView.mm in Sources */,
-				AA11B0152B5BF5C6007235A6 /* imgui.cpp in Sources */,
-				AA11B0172B5BF5C6007235A6 /* imgui_draw.cpp in Sources */,
-				AA11B0192B5BF5C6007235A6 /* imgui_widgets.cpp in Sources */,
-				AA11B01B2B5BF5C6007235A6 /* imgui_tables.cpp in Sources */,
-				AA11B01D2B5BF5C6007235A6 /* imgui_demo.cpp in Sources */,
-				AA11B01F2B5BF5C6007235A6 /* imgui_impl_ios_cg.mm in Sources */,
-				AA11B0422B5BF5C6007235A6 /* HUDOverlayScene.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -710,11 +636,6 @@
 					"$(inherited)",
 					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/IMGUI",
-					"$(PROJECT_DIR)/headers",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -724,9 +645,6 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -763,11 +681,6 @@
 					"$(inherited)",
 					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/IMGUI",
-					"$(PROJECT_DIR)/headers",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -777,9 +690,6 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -951,11 +861,6 @@
 					"DISABLE_PATH_REDIRECTION=1",
 					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/IMGUI",
-					"$(PROJECT_DIR)/headers",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -965,9 +870,6 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1008,11 +910,6 @@
 					"DISABLE_PATH_REDIRECTION=1",
 					"THEOS_PACKAGE_INSTALL_PREFIX=\\\"\\\"",
 				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/IMGUI",
-					"$(PROJECT_DIR)/headers",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TrollSpeed;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -1022,9 +919,6 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

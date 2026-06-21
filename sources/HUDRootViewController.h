@@ -7,12 +7,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class ImGuiHUDView;
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HUDRootViewController: UIViewController
-@property (nonatomic, readonly) ImGuiHUDView *imguiView;
 + (BOOL)passthroughMode;
 - (void)resetLoopTimer;
 - (void)stopLoopTimer;

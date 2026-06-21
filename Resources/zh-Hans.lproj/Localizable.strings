@@ -75,9 +75,6 @@
 
 /* No comment provided by engineer. */
 "Display Mode" = "显示模式";
-"ImGui Mode" = "界面模式";
-"Demo Window" = "Demo 窗口";
-"Main Window" = "主窗口";
 
 /* No comment provided by engineer. */
 "Exit HUD" = "关闭悬浮窗";
