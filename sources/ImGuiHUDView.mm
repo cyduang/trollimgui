@@ -15,6 +15,7 @@
 
 @interface ImGuiHUDView ()
 @property (nonatomic, strong) CADisplayLink *displayLink;
+@property (nonatomic, strong) UIImageView *bitmapView;
 @property (nonatomic, assign) CGContextRef bitmapContext;
 @property (nonatomic, assign) int bufferWidth;
 @property (nonatomic, assign) int bufferHeight;
@@ -70,7 +71,13 @@ static BOOL s_imguiInitialized = NO;
         self.layer.opaque = NO;
         self.userInteractionEnabled = YES;
         self.multipleTouchEnabled = YES;
-        self.contentMode = UIViewContentModeRedraw;
+        _bitmapView = [[UIImageView alloc] initWithFrame:self.bounds];
+        _bitmapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _bitmapView.contentMode = UIViewContentModeScaleToFill;
+        _bitmapView.userInteractionEnabled = NO;
+        _bitmapView.opaque = NO;
+        _bitmapView.backgroundColor = UIColor.clearColor;
+        [self addSubview:_bitmapView];
 
         [self setupImGuiIfNeeded];
 
@@ -95,10 +102,20 @@ static BOOL s_imguiInitialized = NO;
 - (void)didMoveToWindow
 {
     [super didMoveToWindow];
-    self.displayLink.paused = (self.window == nil);
-    if (self.window) {
-        self.contentScaleFactor = self.window.screen.scale;
-        [self ensureBitmapContext];
+    // HUD 系统窗口有时 window 为 nil，但只要仍在视图树中就应继续渲染。
+    self.displayLink.paused = (self.superview == nil);
+    UIScreen *screen = self.window.screen ?: UIScreen.mainScreen;
+    self.contentScaleFactor = screen.scale;
+    _bitmapView.contentScaleFactor = screen.scale;
+    [self ensureBitmapContext];
+}
+
+- (void)resumeRendering
+{
+    self.displayLink.paused = (self.superview == nil);
+    [self ensureBitmapContext];
+    if (s_menuVisible) {
+        [self renderFrame];
     }
 }
 
@@ -120,7 +137,7 @@ static BOOL s_imguiInitialized = NO;
 
 - (void)ensureBitmapContext
 {
-    CGFloat scale = self.window.screen.scale ?: UIScreen.mainScreen.scale;
+    CGFloat scale = (self.window.screen ?: UIScreen.mainScreen).scale;
     int width = (int)(self.bounds.size.width * scale);
     int height = (int)(self.bounds.size.height * scale);
     if (width < 2 || height < 2) {
@@ -203,7 +220,7 @@ static BOOL s_imguiInitialized = NO;
 {
     (void)link;
     if (!s_menuVisible) {
-        self.layer.contents = nil;
+        self.bitmapView.image = nil;
         return;
     }
     [self renderFrame];
@@ -233,7 +250,7 @@ static BOOL s_imguiInitialized = NO;
 {
     ImGuiIO &io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)self.bounds.size.width, (float)self.bounds.size.height);
-    CGFloat scale = self.window.screen.scale ?: UIScreen.mainScreen.scale;
+    CGFloat scale = (self.window.screen ?: UIScreen.mainScreen).scale;
     io.DisplayFramebufferScale = ImVec2((float)scale, (float)scale);
     io.DeltaTime = 1.0f / 60.0f;
 
@@ -305,8 +322,8 @@ static BOOL s_imguiInitialized = NO;
         return;
     }
 
-    self.layer.contents = (__bridge id)image;
-    self.layer.contentsGravity = kCAGravityResize;
+    CGFloat scale = (self.window.screen ?: UIScreen.mainScreen).scale;
+    self.bitmapView.image = [UIImage imageWithCGImage:image scale:scale orientation:UIImageOrientationUp];
     CGImageRelease(image);
 }
 

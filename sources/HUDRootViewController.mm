@@ -227,6 +227,7 @@ static void SpringBoardLockStatusChanged
     [super viewDidAppear:animated];
 
     if (_imguiView) {
+        [_imguiView resumeRendering];
         [_imguiView setNeedsLayout];
         [_imguiView layoutIfNeeded];
     }

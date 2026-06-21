@@ -8,15 +8,12 @@
 #import "HUDMainApplicationDelegate.h"
 #import "HUDMainWindow.h"
 #import "HUDRootViewController.h"
-#import "HUDOverlayScene.h"
-#import "ImGuiHUDView.h"
 
 #import "SBSAccessibilityWindowHostingController.h"
 #import "UIWindow+Private.h"
 
 @implementation HUDMainApplicationDelegate {
     HUDRootViewController *_rootViewController;
-    HUDOverlayScene *_overlayScene;
     SBSAccessibilityWindowHostingController *_windowHostingController;
 }
 
@@ -53,11 +50,8 @@
 
     _rootViewController = [[HUDRootViewController alloc] init];
 
-    // 1. FrontBoard Scene：在桌面创建系统层 overlay（apibug 同款思路）
-    _overlayScene = [[HUDOverlayScene alloc] init];
-    BOOL sceneReady = [_overlayScene activate];
-
-    // 2. UIWindow：用于触摸注入与 SpringBoard 窗口托管
+    // ImGui 必须留在 SBS 托管的 UIWindow 内，才能持久显示在桌面。
+    // FrontBoard Scene 的 presentationView 在部分系统版本上不可见，且会导致 displayLink 暂停。
     self.window = [[HUDMainWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     self.window.opaque = NO;
     self.window.backgroundColor = UIColor.clearColor;
@@ -67,19 +61,6 @@
     [self.window makeKeyAndVisible];
 
     [self registerWindowWithSpringBoard:self.window];
-
-    // 3. 将 ImGui 视图挂到 FrontBoard 系统层（优先），否则回退到 UIWindow
-    (void)_rootViewController.view;
-    ImGuiHUDView *imguiView = _rootViewController.imguiView;
-    if (sceneReady && _overlayScene.hostView && imguiView) {
-        [imguiView removeFromSuperview];
-        imguiView.frame = _overlayScene.hostView.bounds;
-        imguiView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [_overlayScene.hostView addSubview:imguiView];
-        log_debug(OS_LOG_DEFAULT, "ImGui mounted on FrontBoard overlay scene");
-    } else {
-        log_debug(OS_LOG_DEFAULT, "FrontBoard scene unavailable, ImGui stays on UIWindow");
-    }
 
     return YES;
 }

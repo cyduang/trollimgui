@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)isMenuVisible;
 + (void)setShowDemoWindow:(BOOL)visible;
 
+/// 恢复渲染循环（HUD 窗口显示后调用）
+- (void)resumeRendering;
+
 @end
 
 NS_ASSUME_NONNULL_END
