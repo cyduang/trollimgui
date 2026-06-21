@@ -19,6 +19,7 @@
 #import "UIApplication+Private.h"
 
 #define PID_PATH "/var/mobile/Library/Caches/ch.xxtou.hudapp.pid"
+#define PID_PATH_NS (@PID_PATH)
 
 static __used
 NSString *mDeviceModel(void) {
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
             log_debug(OS_LOG_DEFAULT, "HUD pid %d, pgid %d", pid, pgid);
 
             NSString *pidString = [NSString stringWithFormat:@"%d", pid];
-            [pidString writeToFile:ROOT_PATH_NS(PID_PATH)
+            [pidString writeToFile:ROOT_PATH_NS(PID_PATH_NS)
                         atomically:YES
                           encoding:NSUTF8StringEncoding
                              error:nil];
@@ -162,7 +163,7 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[1], "-exit") == 0)
         {
-            NSString *pidString = [NSString stringWithContentsOfFile:ROOT_PATH_NS(PID_PATH)
+            NSString *pidString = [NSString stringWithContentsOfFile:ROOT_PATH_NS(PID_PATH_NS)
                                                             encoding:NSUTF8StringEncoding
                                                                error:nil];
 
@@ -170,14 +171,14 @@ int main(int argc, char *argv[])
             {
                 pid_t pid = (pid_t)[pidString intValue];
                 kill(pid, SIGKILL);
-                unlink([ROOT_PATH_NS(PID_PATH) UTF8String]);
+                unlink(ROOT_PATH(PID_PATH));
             }
 
             return EXIT_SUCCESS;
         }
         else if (strcmp(argv[1], "-check") == 0)
         {
-            NSString *pidString = [NSString stringWithContentsOfFile:ROOT_PATH_NS(PID_PATH)
+            NSString *pidString = [NSString stringWithContentsOfFile:ROOT_PATH_NS(PID_PATH_NS)
                                                             encoding:NSUTF8StringEncoding
                                                                error:nil];
 
